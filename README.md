@@ -2,4 +2,4 @@
 Word cards
 
 v0.1
-v0.1-1 - in dev
+v0.2 - Examples were added

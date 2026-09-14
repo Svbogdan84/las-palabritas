@@ -1,459 +1,555 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Palabritas — Spanish Flashcards v0.1</title>
-<style>
-  :root {
-    --bg: #1B2430;
-    --bg-deep: #141B24;
-    --paper: #F5F1E6;
-    --paper-dim: #E8E2D2;
-    --panel: #22303F;
-    --ink: #1B2430;
-    --gold: #C99A44;
-    --gold-deep: #A87E32;
-    --muted: #9A9484;
-    --muted-2: #C9C4B4;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Palabritas — Spanish Flashcards v0.2 </title>
+    <style>
+        :root {
+            --bg: #1B2430;
+            --bg-deep: #141B24;
+            --paper: #F5F1E6;
+            --paper-dim: #E8E2D2;
+            --panel: #22303F;
+            --ink: #1B2430;
+            --gold: #C99A44;
+            --gold-deep: #A87E32;
+            --muted: #9A9484;
+            --muted-2: #C9C4B4;
+            --noun: #BFE0B6;
+            --noun-deep: #5E9A50;
+            --noun-ink: #274420;
+            --adj: #EFC0BA;
+            --adj-deep: #C1685C;
+            --adj-ink: #4B231E;
+            --verb: #B7D3EC;
+            --verb-deep: #4F7FA8;
+            --verb-ink: #1F3A50;
+            --other: #D9C7E8;
+            --other-deep: #8E6BAE;
+            --other-ink: #3A2A4A;
+        }
 
-    --noun: #BFE0B6;
-    --noun-deep: #5E9A50;
-    --noun-ink: #274420;
+        * {
+            box-sizing: border-box;
+        }
 
-    --adj: #EFC0BA;
-    --adj-deep: #C1685C;
-    --adj-ink: #4B231E;
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            color: var(--paper);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+        }
 
-    --verb: #B7D3EC;
-    --verb-deep: #4F7FA8;
-    --verb-ink: #1F3A50;
+        #app {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 28px 20px 60px;
+            min-height: 100vh;
+        }
 
-    --other: #D9C7E8;
-    --other-deep: #8E6BAE;
-    --other-ink: #3A2A4A;
-  }
+        .serif {
+            font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
+        }
 
-  * { box-sizing: border-box; }
+        /* ---------- Header ---------- */
+        .top {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
 
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--paper);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    min-height: 100vh;
-  }
+        .brand {
+            font-size: 26px;
+            letter-spacing: 0.01em;
+        }
 
-  #app {
-    max-width: 640px;
-    margin: 0 auto;
-    padding: 28px 20px 60px;
-    min-height: 100vh;
-  }
+            .brand em {
+                color: var(--gold);
+                font-style: normal;
+            }
 
-  .serif {
-    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", "Times New Roman", serif;
-  }
+        .reset-link {
+            background: none;
+            border: none;
+            color: var(--muted);
+            font-size: 12px;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            padding: 4px;
+        }
 
-  /* ---------- Header ---------- */
-  .top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin-bottom: 4px;
-  }
+            .reset-link:hover {
+                color: var(--paper);
+            }
 
-  .brand {
-    font-size: 26px;
-    letter-spacing: 0.01em;
-  }
+        .tally {
+            color: var(--muted-2);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
 
-  .brand em {
-    color: var(--gold);
-    font-style: normal;
-  }
+            .tally strong {
+                color: var(--paper);
+                font-weight: 600;
+            }
 
-  .reset-link {
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 12px;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-    padding: 4px;
-  }
-  .reset-link:hover { color: var(--paper); }
+        .section-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--muted-2);
+            letter-spacing: 0.03em;
+            margin: 0 0 12px;
+        }
 
-  .tally {
-    color: var(--muted-2);
-    font-size: 14px;
-    margin-bottom: 30px;
-  }
+        /* ---------- Picker: main category tiles ---------- */
+        .tiles {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 34px;
+        }
 
-  .tally strong { color: var(--paper); font-weight: 600; }
+        .tile {
+            display: block;
+            width: 100%;
+            text-align: left;
+            border: none;
+            border-radius: 4px;
+            padding: 22px 24px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s ease;
+        }
 
-  .section-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--muted-2);
-    letter-spacing: 0.03em;
-    margin: 0 0 12px;
-  }
+            .tile:hover {
+                transform: translateY(-2px);
+            }
 
-  /* ---------- Picker: main category tiles ---------- */
-  .tiles {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-bottom: 34px;
-  }
+            .tile:active {
+                transform: translateY(0);
+            }
 
-  .mix-mode-btn {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    width: 100%;
-    margin: 0 0 34px;
-    padding: 18px 22px;
-    border: 1px solid var(--gold);
-    border-radius: 4px;
-    background: var(--panel);
-    color: var(--paper);
-    text-align: left;
-    cursor: pointer;
-    transition: transform 0.15s ease, background 0.15s ease;
-  }
-  .mix-mode-btn:hover { transform: translateY(-2px); background: var(--bg-deep); }
-  .mix-mode-btn:active { transform: translateY(0); }
-  .mix-mode-title { font-size: 1.35rem; }
-  .mix-mode-sub { color: var(--muted-2); font-size: 0.85rem; }
+        .tile-noun {
+            background: var(--noun);
+            color: var(--noun-ink);
+        }
 
-  .tile {
-    display: block;
-    width: 100%;
-    text-align: left;
-    border: none;
-    border-radius: 4px;
-    padding: 22px 24px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.15s ease;
-  }
-  .tile:hover { transform: translateY(-2px); }
-  .chip-mix { background: var(--gold); color: var(--ink); }
-  .tile:active { transform: translateY(0); }
+        .tile-adjective {
+            background: var(--adj);
+            color: var(--adj-ink);
+        }
 
-  .tile-noun { background: var(--noun); color: var(--noun-ink); }
-  .tile-adjective { background: var(--adj); color: var(--adj-ink); }
-  .tile-verb { background: var(--verb); color: var(--verb-ink); }
-  .tile-other { background: var(--other); color: var(--other-ink); }
+        .tile-verb {
+            background: var(--verb);
+            color: var(--verb-ink);
+        }
 
-  .tile-es {
-    font-size: 24px;
-    margin: 0 0 2px;
-  }
+        .tile-other {
+            background: var(--other);
+            color: var(--other-ink);
+        }
 
-  .tile-en {
-    font-size: 13px;
-    opacity: 0.75;
-    margin: 0 0 16px;
-  }
+        .tile-es {
+            font-size: 24px;
+            margin: 0 0 2px;
+        }
 
-  .tile-progress-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 13px;
-    margin-bottom: 6px;
-  }
+        .tile-en {
+            font-size: 13px;
+            opacity: 0.75;
+            margin: 0 0 16px;
+        }
 
-  .tile-bar-track {
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(0,0,0,0.14);
-    overflow: hidden;
-  }
+        .tile-progress-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
 
-  .tile-bar-fill { height: 100%; border-radius: 3px; }
-  .tile-noun .tile-bar-fill { background: var(--noun-deep); }
-  .tile-adjective .tile-bar-fill { background: var(--adj-deep); }
-  .tile-verb .tile-bar-fill { background: var(--verb-deep); }
-  .tile-other .tile-bar-fill { background: var(--other-deep); }
+        .tile-bar-track {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(0,0,0,0.14);
+            overflow: hidden;
+        }
 
-  .tile-check {
-    position: absolute;
-    top: 18px;
-    right: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-  }
+        .tile-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
 
-  /* ---------- Picker: topic (sub-category) grid ---------- */
-  .topics {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+        .tile-noun .tile-bar-fill {
+            background: var(--noun-deep);
+        }
 
-  .topic-tile {
-    background: var(--panel);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 6px;
-    padding: 16px 14px;
-    text-align: left;
-    cursor: pointer;
-    color: var(--paper);
-    position: relative;
-    transition: transform 0.15s ease, border-color 0.15s ease;
-  }
-  .topic-tile:hover { transform: translateY(-2px); border-color: rgba(201,154,68,0.5); }
-  .topic-tile:active { transform: translateY(0); }
+        .tile-adjective .tile-bar-fill {
+            background: var(--adj-deep);
+        }
 
-  .topic-icon { font-size: 20px; margin-bottom: 8px; display: block; }
+        .tile-verb .tile-bar-fill {
+            background: var(--verb-deep);
+        }
 
-  .topic-es {
-    font-size: 15px;
-    margin: 0;
-    font-weight: 600;
-  }
+        .tile-other .tile-bar-fill {
+            background: var(--other-deep);
+        }
 
-  .topic-en {
-    font-size: 11px;
-    color: var(--muted-2);
-    margin: 0 0 10px;
-  }
+        .tile-check {
+            position: absolute;
+            top: 18px;
+            right: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
 
-  .topic-count {
-    font-size: 11px;
-    color: var(--muted-2);
-    margin-bottom: 5px;
-  }
+        /* ---------- Picker: topic (sub-category) grid ---------- */
+        .topics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
 
-  .topic-bar-track {
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.08);
-    overflow: hidden;
-  }
-  .topic-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: var(--gold);
-  }
+        .topic-tile {
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 6px;
+            padding: 16px 14px;
+            text-align: left;
+            cursor: pointer;
+            color: var(--paper);
+            position: relative;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
 
-  .topic-check {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 0.02em;
-  }
+            .topic-tile:hover {
+                transform: translateY(-2px);
+                border-color: rgba(201,154,68,0.5);
+            }
 
-  /* ---------- Session screen ---------- */
-  .session-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 22px;
-  }
+            .topic-tile:active {
+                transform: translateY(0);
+            }
 
-  .back-btn {
-    background: none;
-    border: none;
-    color: var(--muted-2);
-    font-size: 14px;
-    cursor: pointer;
-    padding: 6px 0;
-  }
-  .back-btn:hover { color: var(--paper); }
+        .topic-icon {
+            font-size: 20px;
+            margin-bottom: 8px;
+            display: block;
+        }
 
-  .cat-chip {
-    font-size: 12px;
-    font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 999px;
-    letter-spacing: 0.02em;
-  }
-  .chip-noun { background: var(--noun); color: var(--noun-ink); }
-  .chip-adjective { background: var(--adj); color: var(--adj-ink); }
-  .chip-verb { background: var(--verb); color: var(--verb-ink); }
-  .chip-other { background: var(--other); color: var(--other-ink); }
-  .chip-sub { background: var(--gold); color: var(--bg-deep); }
+        .topic-es {
+            font-size: 15px;
+            margin: 0;
+            font-weight: 600;
+        }
 
-  .session-bar-track {
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.1);
-    margin-bottom: 40px;
-    overflow: hidden;
-  }
-  .session-bar-fill {
-    height: 100%;
-    background: var(--gold);
-    border-radius: 2px;
-    transition: width 0.25s ease;
-  }
+        .topic-en {
+            font-size: 11px;
+            color: var(--muted-2);
+            margin: 0 0 10px;
+        }
 
-  .card-wrap {
-    perspective: 1200px;
-    margin-bottom: 22px;
-  }
+        .topic-count {
+            font-size: 11px;
+            color: var(--muted-2);
+            margin-bottom: 5px;
+        }
 
-  .card {
-    position: relative;
-    height: 260px;
-    border-radius: 10px;
-    cursor: pointer;
-    transform-style: preserve-3d;
-    transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
-  }
-  .card.flipped { transform: rotateY(180deg); }
+        .topic-bar-track {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
 
-  .card-face {
-    position: absolute;
-    inset: 0;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    backface-visibility: hidden;
-    background: var(--paper);
-    color: var(--ink);
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  }
+        .topic-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: var(--gold);
+        }
 
-  .card-back { transform: rotateY(180deg); }
+        .topic-check {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.02em;
+        }
 
-  .card-word {
-    font-size: 36px;
-    margin: 0;
-    line-height: 1.15;
-  }
+        /* ---------- Session screen ---------- */
+        .session-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
 
-  .card-hint {
-    margin-top: 14px;
-    font-size: 12px;
-    color: var(--muted);
-    letter-spacing: 0.02em;
-  }
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--muted-2);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 6px 0;
+        }
 
-  .card-cat-label {
-    position: absolute;
-    top: 16px;
-    left: 18px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--muted);
-  }
+            .back-btn:hover {
+                color: var(--paper);
+            }
 
-  .actions {
-    display: flex;
-    gap: 12px;
-  }
+        .cat-chip {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 999px;
+            letter-spacing: 0.02em;
+        }
 
-  .btn {
-    flex: 1;
-    padding: 15px;
-    border-radius: 6px;
-    border: none;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.15s ease, transform 0.1s ease;
-  }
-  .btn:active { transform: scale(0.98); }
-  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+        .chip-noun {
+            background: var(--noun);
+            color: var(--noun-ink);
+        }
 
-  .btn-skip {
-    background: transparent;
-    color: var(--paper);
-    border: 1px solid rgba(255,255,255,0.25);
-  }
-  .btn-skip:not(:disabled):hover { border-color: var(--paper); }
+        .chip-adjective {
+            background: var(--adj);
+            color: var(--adj-ink);
+        }
 
-  .btn-learned {
-    background: var(--gold);
-    color: var(--bg-deep);
-  }
-  .btn-learned:not(:disabled):hover { background: var(--gold-deep); }
+        .chip-verb {
+            background: var(--verb);
+            color: var(--verb-ink);
+        }
 
-  /* ---------- Complete screen ---------- */
-  .complete {
-    text-align: center;
-    padding: 60px 10px;
-  }
+        .chip-other {
+            background: var(--other);
+            color: var(--other-ink);
+        }
 
-  .complete-title {
-    font-size: 30px;
-    margin: 0 0 10px;
-  }
+        .chip-sub {
+            background: var(--gold);
+            color: var(--bg-deep);
+        }
 
-  .complete-sub {
-    color: var(--muted-2);
-    font-size: 15px;
-    margin-bottom: 36px;
-  }
+        .session-bar-track {
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 40px;
+            overflow: hidden;
+        }
 
-  .complete-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    max-width: 260px;
-    margin: 0 auto;
-  }
+        .session-bar-fill {
+            height: 100%;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: width 0.25s ease;
+        }
 
-  .btn-primary {
-    background: var(--gold);
-    color: var(--bg-deep);
-    border: none;
-    padding: 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .btn-primary:hover { background: var(--gold-deep); }
+        .card-wrap {
+            perspective: 1200px;
+            margin-bottom: 22px;
+        }
 
-  .btn-secondary {
-    background: transparent;
-    color: var(--paper);
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 14px;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-  .btn-secondary:hover { border-color: var(--paper); }
+        .card {
+            position: relative;
+            height: 300px;
+            border-radius: 10px;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0.2, 0.2, 1);
+        }
 
-  .loading {
-    text-align: center;
-    color: var(--muted-2);
-    padding: 80px 0;
-    font-size: 14px;
-  }
+            .card.flipped {
+                transform: rotateY(180deg);
+            }
 
-  @media (min-width: 560px) {
-    .tiles { flex-direction: row; flex-wrap: wrap; }
-    .tile { flex: 1 1 calc(50% - 7px); }
-    .topics { grid-template-columns: repeat(3, 1fr); }
-  }
-</style>
+        .card-face {
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 22px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .card-word {
+            font-size: 34px;
+            margin: 0;
+            line-height: 1.15;
+        }
+
+        .card-example {
+            margin: 16px 0 0;
+            font-size: 14px;
+            font-style: italic;
+            color: #5C5646;
+            max-width: 90%;
+            line-height: 1.4;
+        }
+
+        .card-hint {
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: 0.02em;
+        }
+
+        .card-cat-label {
+            position: absolute;
+            top: 16px;
+            left: 18px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border-radius: 6px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.15s ease, transform 0.1s ease;
+        }
+
+            .btn:active {
+                transform: scale(0.98);
+            }
+
+            .btn:disabled {
+                opacity: 0.35;
+                cursor: not-allowed;
+            }
+
+        .btn-skip {
+            background: transparent;
+            color: var(--paper);
+            border: 1px solid rgba(255,255,255,0.25);
+        }
+
+            .btn-skip:not(:disabled):hover {
+                border-color: var(--paper);
+            }
+
+        .btn-learned {
+            background: var(--gold);
+            color: var(--bg-deep);
+        }
+
+            .btn-learned:not(:disabled):hover {
+                background: var(--gold-deep);
+            }
+
+        /* ---------- Complete screen ---------- */
+        .complete {
+            text-align: center;
+            padding: 60px 10px;
+        }
+
+        .complete-title {
+            font-size: 30px;
+            margin: 0 0 10px;
+        }
+
+        .complete-sub {
+            color: var(--muted-2);
+            font-size: 15px;
+            margin-bottom: 36px;
+        }
+
+        .complete-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 260px;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--bg-deep);
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-primary:hover {
+                background: var(--gold-deep);
+            }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--paper);
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+            .btn-secondary:hover {
+                border-color: var(--paper);
+            }
+
+        .loading {
+            text-align: center;
+            color: var(--muted-2);
+            padding: 80px 0;
+            font-size: 14px;
+        }
+
+        @media (min-width: 560px) {
+            .tiles {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+
+            .tile {
+                flex: 1 1 calc(50% - 7px);
+            }
+
+            .topics {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
 </head>
 <body>
-<div id="app"><div class="loading">Loading…</div></div>
+    <div id="app"><div class="loading">Loading…</div></div>
 
-<script>
-(function () {
+    <script>(function () {
   const CATEGORIES = {
     noun:      { es: "Sustantivos", en: "Nouns",      cls: "noun",      group: "main" },
     adjective: { es: "Adjetivos",   en: "Adjectives",  cls: "adjective", group: "main" },
@@ -473,1017 +569,1020 @@
   };
 
   const WORDS = [
-    // Nouns
-    { id: "n1", cat: "noun", es: "la casa", en: "house" },
-    { id: "n2", cat: "noun", es: "el perro", en: "dog" },
-    { id: "n3", cat: "noun", es: "el gato", en: "cat" },
-    { id: "n4", cat: "noun", es: "el libro", en: "book" },
-    { id: "n5", cat: "noun", es: "el agua", en: "water" },
-    { id: "n6", cat: "noun", es: "el amigo", en: "friend" },
-    { id: "n7", cat: "noun", es: "la comida", en: "food" },
-    { id: "n8", cat: "noun", es: "la ciudad", en: "city" },
-    { id: "n9", cat: "noun", es: "la familia", en: "family" },
-    { id: "n10", cat: "noun", es: "el tiempo", en: "time / weather" },
-    { id: "n11", cat: "noun", es: "el trabajo", en: "work" },
-    { id: "n12", cat: "noun", es: "el coche", en: "car" },
-    { id: "n13", cat: "noun", es: "la puerta", en: "door" },
-    { id: "n14", cat: "noun", es: "la mesa", en: "table" },
-    { id: "n15", cat: "noun", es: "la silla", en: "chair" },
-    { id: "n16", cat: "noun", es: "la escuela", en: "school" },
-    { id: "n17", cat: "noun", es: "el dinero", en: "money" },
-    { id: "n18", cat: "noun", es: "la playa", en: "beach" },
-    { id: "n19", cat: "noun", es: "la música", en: "music" },
-    { id: "n20", cat: "noun", es: "el sol", en: "sun" },
-    // Adjectives
-    { id: "a1", cat: "adjective", es: "grande", en: "big" },
-    { id: "a2", cat: "adjective", es: "pequeño", en: "small" },
-    { id: "a3", cat: "adjective", es: "feliz", en: "happy" },
-    { id: "a4", cat: "adjective", es: "triste", en: "sad" },
-    { id: "a5", cat: "adjective", es: "bonito", en: "pretty" },
-    { id: "a6", cat: "adjective", es: "rápido", en: "fast" },
-    { id: "a7", cat: "adjective", es: "lento", en: "slow" },
-    { id: "a8", cat: "adjective", es: "caliente", en: "hot" },
-    { id: "a9", cat: "adjective", es: "frío", en: "cold" },
-    { id: "a10", cat: "adjective", es: "nuevo", en: "new" },
-    { id: "a11", cat: "adjective", es: "viejo", en: "old" },
-    { id: "a12", cat: "adjective", es: "fácil", en: "easy" },
-    { id: "a13", cat: "adjective", es: "difícil", en: "difficult" },
-    { id: "a14", cat: "adjective", es: "alto", en: "tall" },
-    { id: "a15", cat: "adjective", es: "bajo", en: "short" },
-    { id: "a16", cat: "adjective", es: "fuerte", en: "strong" },
-    { id: "a17", cat: "adjective", es: "débil", en: "weak" },
-    { id: "a18", cat: "adjective", es: "limpio", en: "clean" },
-    { id: "a19", cat: "adjective", es: "sucio", en: "dirty" },
-    { id: "a20", cat: "adjective", es: "inteligente", en: "smart" },
-    // Verbs
-    { id: "v1", cat: "verb", es: "hablar", en: "to speak" },
-    { id: "v2", cat: "verb", es: "comer", en: "to eat" },
-    { id: "v3", cat: "verb", es: "beber", en: "to drink" },
-    { id: "v4", cat: "verb", es: "correr", en: "to run" },
-    { id: "v5", cat: "verb", es: "dormir", en: "to sleep" },
-    { id: "v6", cat: "verb", es: "leer", en: "to read" },
-    { id: "v7", cat: "verb", es: "escribir", en: "to write" },
-    { id: "v8", cat: "verb", es: "vivir", en: "to live" },
-    { id: "v9", cat: "verb", es: "trabajar", en: "to work" },
-    { id: "v10", cat: "verb", es: "estudiar", en: "to study" },
-    { id: "v11", cat: "verb", es: "viajar", en: "to travel" },
-    { id: "v12", cat: "verb", es: "jugar", en: "to play" },
-    { id: "v13", cat: "verb", es: "cantar", en: "to sing" },
-    { id: "v14", cat: "verb", es: "bailar", en: "to dance" },
-    { id: "v15", cat: "verb", es: "cocinar", en: "to cook" },
-    { id: "v16", cat: "verb", es: "escuchar", en: "to listen" },
-    { id: "v17", cat: "verb", es: "mirar", en: "to watch" },
-    { id: "v18", cat: "verb", es: "comprender", en: "to understand" },
-    { id: "v19", cat: "verb", es: "ayudar", en: "to help" },
-    { id: "v20", cat: "verb", es: "pensar", en: "to think" },
-    // Others: pronouns, numerals, adverbs, prepositions, conjunctions
-    { id: "o1", cat: "other", es: "yo", en: "I" },
-    { id: "o2", cat: "other", es: "tú", en: "you" },
-    { id: "o3", cat: "other", es: "él", en: "he" },
-    { id: "o4", cat: "other", es: "ella", en: "she" },
-    { id: "o5", cat: "other", es: "nosotros", en: "we" },
-    { id: "o6", cat: "other", es: "ellos", en: "they" },
-    { id: "o7", cat: "other", es: "uno", en: "one" },
-    { id: "o8", cat: "other", es: "dos", en: "two" },
-    { id: "o9", cat: "other", es: "tres", en: "three" },
-    { id: "o10", cat: "other", es: "diez", en: "ten" },
-    { id: "o11", cat: "other", es: "cien", en: "one hundred" },
-    { id: "o12", cat: "other", es: "muy", en: "very" },
-    { id: "o13", cat: "other", es: "también", en: "also" },
-    { id: "o14", cat: "other", es: "siempre", en: "always" },
-    { id: "o15", cat: "other", es: "nunca", en: "never" },
-    { id: "o16", cat: "other", es: "ahora", en: "now" },
-    { id: "o17", cat: "other", es: "con", en: "with" },
-    { id: "o18", cat: "other", es: "sin", en: "without" },
-    { id: "o19", cat: "other", es: "para", en: "for" },
-    { id: "o20", cat: "other", es: "y", en: "and" },
-    { id: "o21", cat: "other", es: "usted", en: "you (formal)" },
-    { id: "o22", cat: "other", es: "ustedes", en: "you (plural/formal)" },
-    { id: "o23", cat: "other", es: "nos", en: "us" },
-    { id: "o24", cat: "other", es: "me", en: "me" },
-    { id: "o25", cat: "other", es: "te", en: "you" },
-    { id: "o26", cat: "other", es: "se", en: "oneself / themselves" },
-    { id: "o27", cat: "other", es: "le", en: "to him/her; to you" },
-    { id: "o28", cat: "other", es: "les", en: "to them; to you plural" },
-    { id: "o29", cat: "other", es: "lo", en: "him/it" },
-    { id: "o30", cat: "other", es: "la", en: "her/it" },
-    { id: "o31", cat: "other", es: "los", en: "them" },
-    { id: "o32", cat: "other", es: "las", en: "them" },
-    { id: "o33", cat: "other", es: "mi", en: "my" },
-    { id: "o34", cat: "other", es: "tu", en: "your" },
-    { id: "o35", cat: "other", es: "su", en: "his/her/your/their" },
-    { id: "o36", cat: "other", es: "nuestro", en: "our" },
-    { id: "o37", cat: "other", es: "vuestro", en: "your (plural, Spain)" },
-    { id: "o38", cat: "other", es: "mío", en: "mine" },
-    { id: "o39", cat: "other", es: "tuyo", en: "yours" },
-    { id: "o40", cat: "other", es: "suyo", en: "his/hers/yours/theirs" },
-    { id: "o41", cat: "other", es: "este", en: "this" },
-    { id: "o42", cat: "other", es: "esta", en: "this" },
-    { id: "o43", cat: "other", es: "estos", en: "these" },
-    { id: "o44", cat: "other", es: "estas", en: "these" },
-    { id: "o45", cat: "other", es: "ese", en: "that" },
-    { id: "o46", cat: "other", es: "esa", en: "that" },
-    { id: "o47", cat: "other", es: "esos", en: "those" },
-    { id: "o48", cat: "other", es: "esas", en: "those" },
-    { id: "o49", cat: "other", es: "aquel", en: "that over there" },
-    { id: "o50", cat: "other", es: "aquella", en: "that over there" },
-    { id: "o51", cat: "other", es: "algo", en: "something" },
-    { id: "o52", cat: "other", es: "nada", en: "nothing" },
-    { id: "o53", cat: "other", es: "alguien", en: "someone" },
-    { id: "o54", cat: "other", es: "nadie", en: "nobody" },
-    { id: "o55", cat: "other", es: "cualquiera", en: "anyone / anyone at all" },
-    { id: "o56", cat: "other", es: "cada", en: "each / every" },
-    { id: "o57", cat: "other", es: "todo", en: "everything / all" },
-    { id: "o58", cat: "other", es: "otro", en: "other / another" },
-    { id: "o59", cat: "other", es: "mismo", en: "same" },
-    { id: "o60", cat: "other", es: "varios", en: "several" },
-    { id: "o61", cat: "other", es: "qué", en: "what" },
-    { id: "o62", cat: "other", es: "quién", en: "who" },
-    { id: "o63", cat: "other", es: "quiénes", en: "who (plural)" },
-    { id: "o64", cat: "other", es: "cuál", en: "which" },
-    { id: "o65", cat: "other", es: "cuáles", en: "which (plural)" },
-    { id: "o66", cat: "other", es: "dónde", en: "where" },
-    { id: "o67", cat: "other", es: "adónde", en: "where to" },
-    { id: "o68", cat: "other", es: "de dónde", en: "where from" },
-    { id: "o69", cat: "other", es: "cuándo", en: "when" },
-    { id: "o70", cat: "other", es: "cómo", en: "how" },
-    { id: "o71", cat: "other", es: "por qué", en: "why" },
-    { id: "o72", cat: "other", es: "porque", en: "because" },
-    { id: "o73", cat: "other", es: "para qué", en: "what for" },
-    { id: "o74", cat: "other", es: "cuánto", en: "how much" },
-    { id: "o75", cat: "other", es: "cuánta", en: "how much" },
-    { id: "o76", cat: "other", es: "cuántos", en: "how many" },
-    { id: "o77", cat: "other", es: "cuántas", en: "how many" },
-    { id: "o78", cat: "other", es: "si", en: "if" },
-    { id: "o79", cat: "other", es: "aunque", en: "although" },
-    { id: "o80", cat: "other", es: "mientras", en: "while" },
-    { id: "o81", cat: "other", es: "y", en: "and" },
-    { id: "o82", cat: "other", es: "o", en: "or" },
-    { id: "o83", cat: "other", es: "pero", en: "but" },
-    { id: "o84", cat: "other", es: "sino", en: "but rather" },
-    { id: "o85", cat: "other", es: "ni", en: "nor" },
-    { id: "o86", cat: "other", es: "pues", en: "well / then" },
-    { id: "o87", cat: "other", es: "entonces", en: "then" },
-    { id: "o88", cat: "other", es: "además", en: "besides / moreover" },
-    { id: "o89", cat: "other", es: "sin embargo", en: "however" },
-    { id: "o90", cat: "other", es: "por eso", en: "therefore / that's why" },
-    { id: "o91", cat: "other", es: "a", en: "to / at" },
-    { id: "o92", cat: "other", es: "de", en: "of / from" },
-    { id: "o93", cat: "other", es: "en", en: "in / on / at" },
-    { id: "o94", cat: "other", es: "por", en: "for / by / through" },
-    { id: "o95", cat: "other", es: "para", en: "for / in order to" },
-    { id: "o96", cat: "other", es: "sobre", en: "about / on" },
-    { id: "o97", cat: "other", es: "entre", en: "between / among" },
-    { id: "o98", cat: "other", es: "hacia", en: "toward" },
-    { id: "o99", cat: "other", es: "hasta", en: "until / up to" },
-    { id: "o100", cat: "other", es: "desde", en: "from / since" },
-    { id: "o101", cat: "other", es: "contra", en: "against" },
-    { id: "o102", cat: "other", es: "según", en: "according to" },
-    { id: "o103", cat: "other", es: "durante", en: "during" },
-    { id: "o104", cat: "other", es: "mediante", en: "by means of" },
-    { id: "o105", cat: "other", es: "excepto", en: "except" },
-    { id: "o106", cat: "other", es: "sin", en: "without" },
-    { id: "o107", cat: "other", es: "tras", en: "after / behind" },
-    { id: "o108", cat: "other", es: "ante", en: "before / in the presence of" },
-    { id: "o109", cat: "other", es: "bajo", en: "under" },
-    { id: "o110", cat: "other", es: "encima de", en: "on top of" },
-    { id: "o111", cat: "other", es: "aquí", en: "here" },
-    { id: "o112", cat: "other", es: "ahí", en: "there" },
-    { id: "o113", cat: "other", es: "allí", en: "there / over there" },
-    { id: "o114", cat: "other", es: "allá", en: "over there" },
-    { id: "o115", cat: "other", es: "cerca", en: "near" },
-    { id: "o116", cat: "other", es: "lejos", en: "far" },
-    { id: "o117", cat: "other", es: "dentro", en: "inside" },
-    { id: "o118", cat: "other", es: "fuera", en: "outside" },
-    { id: "o119", cat: "other", es: "arriba", en: "up / upstairs" },
-    { id: "o120", cat: "other", es: "abajo", en: "down / downstairs" },
-    { id: "o121", cat: "other", es: "delante", en: "in front" },
-    { id: "o122", cat: "other", es: "detrás", en: "behind" },
-    { id: "o123", cat: "other", es: "al lado", en: "beside" },
-    { id: "o124", cat: "other", es: "alrededor", en: "around" },
-    { id: "o125", cat: "other", es: "enfrente", en: "opposite / in front" },
-    { id: "o126", cat: "other", es: "juntos", en: "together" },
-    { id: "o127", cat: "other", es: "separados", en: "apart / separately" },
-    { id: "o128", cat: "other", es: "cerca de", en: "close to" },
-    { id: "o129", cat: "other", es: "lejos de", en: "far from" },
-    { id: "o130", cat: "other", es: "a la izquierda", en: "to the left" },
-    { id: "o131", cat: "other", es: "hoy", en: "today" },
-    { id: "o132", cat: "other", es: "ayer", en: "yesterday" },
-    { id: "o133", cat: "other", es: "mañana", en: "tomorrow" },
-    { id: "o134", cat: "other", es: "anoche", en: "last night" },
-    { id: "o135", cat: "other", es: "pronto", en: "soon" },
-    { id: "o136", cat: "other", es: "tarde", en: "late" },
-    { id: "o137", cat: "other", es: "temprano", en: "early" },
-    { id: "o138", cat: "other", es: "después", en: "after / afterward" },
-    { id: "o139", cat: "other", es: "antes", en: "before" },
-    { id: "o140", cat: "other", es: "todavía", en: "still / yet" },
-    { id: "o141", cat: "other", es: "ya", en: "already / now" },
-    { id: "o142", cat: "other", es: "casi", en: "almost" },
-    { id: "o143", cat: "other", es: "apenas", en: "hardly / barely" },
-    { id: "o144", cat: "other", es: "siempre", en: "always" },
-    { id: "o145", cat: "other", es: "nunca", en: "never" },
-    { id: "o146", cat: "other", es: "jamás", en: "never / ever" },
-    { id: "o147", cat: "other", es: "a menudo", en: "often" },
-    { id: "o148", cat: "other", es: "normalmente", en: "normally" },
-    { id: "o149", cat: "other", es: "generalmente", en: "generally" },
-    { id: "o150", cat: "other", es: "a veces", en: "sometimes" },
-    { id: "o151", cat: "other", es: "muy", en: "very" },
-    { id: "o152", cat: "other", es: "bastante", en: "quite / enough" },
-    { id: "o153", cat: "other", es: "demasiado", en: "too much / too" },
-    { id: "o154", cat: "other", es: "más", en: "more" },
-    { id: "o155", cat: "other", es: "menos", en: "less" },
-    { id: "o156", cat: "other", es: "mejor", en: "better" },
-    { id: "o157", cat: "other", es: "peor", en: "worse" },
-    { id: "o158", cat: "other", es: "también", en: "also" },
-    { id: "o159", cat: "other", es: "tampoco", en: "neither / either" },
-    { id: "o160", cat: "other", es: "solo", en: "only / alone" },
-    { id: "o161", cat: "other", es: "bien", en: "well" },
-    { id: "o162", cat: "other", es: "mal", en: "badly / wrong" },
-    { id: "o163", cat: "other", es: "así", en: "like this / so" },
-    { id: "o164", cat: "other", es: "quizá", en: "perhaps" },
-    { id: "o165", cat: "other", es: "quizás", en: "perhaps" },
-    { id: "o166", cat: "other", es: "realmente", en: "really" },
-    { id: "o167", cat: "other", es: "exactamente", en: "exactly" },
-    { id: "o168", cat: "other", es: "especialmente", en: "especially" },
-    { id: "o169", cat: "other", es: "probablemente", en: "probably" },
-    { id: "o170", cat: "other", es: "finalmente", en: "finally" },
-    { id: "o171", cat: "other", es: "sí", en: "yes" },
-    { id: "o172", cat: "other", es: "no", en: "no" },
-    { id: "o173", cat: "other", es: "también", en: "also" },
-    { id: "o174", cat: "other", es: "claro", en: "of course / clear" },
-    { id: "o175", cat: "other", es: "vale", en: "okay" },
-    { id: "o176", cat: "other", es: "por favor", en: "please" },
-    { id: "o177", cat: "other", es: "gracias", en: "thank you" },
-    { id: "o178", cat: "other", es: "perdón", en: "sorry / excuse me" },
-    { id: "o179", cat: "other", es: "hola", en: "hello" },
-    { id: "o180", cat: "other", es: "adiós", en: "goodbye" },
-    { id: "o181", cat: "other", es: "bueno", en: "well / good" },
-    { id: "o182", cat: "other", es: "poco", en: "little / few" },
-    { id: "o183", cat: "other", es: "mucho", en: "much / a lot" },
-    { id: "o184", cat: "other", es: "bastante", en: "enough / quite" },
-    { id: "o185", cat: "other", es: "nunca más", en: "never again" },
-    { id: "o186", cat: "other", es: "otra vez", en: "again" },
-    { id: "o187", cat: "other", es: "de nuevo", en: "again / anew" },
-    { id: "o188", cat: "other", es: "por ejemplo", en: "for example" },
-    { id: "o189", cat: "other", es: "en realidad", en: "actually" },
-    { id: "o190", cat: "other", es: "en general", en: "in general" },
-    { id: "o191", cat: "other", es: "por supuesto", en: "of course" },
-    { id: "o192", cat: "other", es: "tal vez", en: "maybe" },
-    { id: "o193", cat: "other", es: "de verdad", en: "really / truly" },
-    { id: "o194", cat: "other", es: "al menos", en: "at least" },
-    { id: "o195", cat: "other", es: "por fin", en: "finally / at last" },
-    { id: "o196", cat: "other", es: "en seguida", en: "right away" },
-    { id: "o197", cat: "other", es: "aún", en: "still / yet" },
-    { id: "o198", cat: "other", es: "incluso", en: "even" },
-    { id: "o199", cat: "other", es: "también", en: "too / also" },
-    { id: "o200", cat: "other", es: "tanto", en: "so much / as much" },
-
-
-    // Additional main-category vocabulary
-    { id: "n21", cat: "noun", es: "el hombre", en: "man" },
-    { id: "n22", cat: "noun", es: "la mujer", en: "woman" },
-    { id: "n23", cat: "noun", es: "el niño", en: "boy" },
-    { id: "n24", cat: "noun", es: "la niña", en: "girl" },
-    { id: "n25", cat: "noun", es: "el bebé", en: "baby" },
-    { id: "n26", cat: "noun", es: "la persona", en: "person" },
-    { id: "n27", cat: "noun", es: "el nombre", en: "name" },
-    { id: "n28", cat: "noun", es: "la palabra", en: "word" },
-    { id: "n29", cat: "noun", es: "el idioma", en: "language" },
-    { id: "n30", cat: "noun", es: "la pregunta", en: "question" },
-    { id: "n31", cat: "noun", es: "la respuesta", en: "answer" },
-    { id: "n32", cat: "noun", es: "el problema", en: "problem" },
-    { id: "n33", cat: "noun", es: "la idea", en: "idea" },
-    { id: "n34", cat: "noun", es: "el ejemplo", en: "example" },
-    { id: "n35", cat: "noun", es: "la razón", en: "reason" },
-    { id: "n36", cat: "noun", es: "el lugar", en: "place" },
-    { id: "n37", cat: "noun", es: "el mundo", en: "world" },
-    { id: "n38", cat: "noun", es: "el país", en: "country" },
-    { id: "n39", cat: "noun", es: "la región", en: "region" },
-    { id: "n40", cat: "noun", es: "el pueblo", en: "town / village" },
-    { id: "n41", cat: "noun", es: "la calle", en: "street" },
-    { id: "n42", cat: "noun", es: "el camino", en: "road / path" },
-    { id: "n43", cat: "noun", es: "el parque", en: "park" },
-    { id: "n44", cat: "noun", es: "la tienda", en: "shop" },
-    { id: "n45", cat: "noun", es: "el mercado", en: "market" },
-    { id: "n46", cat: "noun", es: "la oficina", en: "office" },
-    { id: "n47", cat: "noun", es: "el edificio", en: "building" },
-    { id: "n48", cat: "noun", es: "la estación", en: "station" },
-    { id: "n49", cat: "noun", es: "el tren", en: "train" },
-    { id: "n50", cat: "noun", es: "el autobús", en: "bus" },
-    { id: "n51", cat: "noun", es: "la bicicleta", en: "bicycle" },
-    { id: "n52", cat: "noun", es: "la moto", en: "motorcycle" },
-    { id: "n53", cat: "noun", es: "el barco", en: "boat" },
-    { id: "n54", cat: "noun", es: "el viaje", en: "trip" },
-    { id: "n55", cat: "noun", es: "la maleta", en: "suitcase" },
-    { id: "n56", cat: "noun", es: "el teléfono", en: "telephone" },
-    { id: "n57", cat: "noun", es: "el ordenador", en: "computer" },
-    { id: "n58", cat: "noun", es: "la pantalla", en: "screen" },
-    { id: "n59", cat: "noun", es: "el teclado", en: "keyboard" },
-    { id: "n60", cat: "noun", es: "la cámara", en: "camera" },
-    { id: "n61", cat: "noun", es: "la foto", en: "photo" },
-    { id: "n62", cat: "noun", es: "el mensaje", en: "message" },
-    { id: "n63", cat: "noun", es: "la carta", en: "letter" },
-    { id: "n64", cat: "noun", es: "el correo", en: "mail / email" },
-    { id: "n65", cat: "noun", es: "la noticia", en: "news" },
-    { id: "n66", cat: "noun", es: "el periódico", en: "newspaper" },
-    { id: "n67", cat: "noun", es: "la película", en: "movie" },
-    { id: "n68", cat: "noun", es: "la canción", en: "song" },
-    { id: "n69", cat: "noun", es: "el juego", en: "game" },
-    { id: "n70", cat: "noun", es: "el deporte", en: "sport" },
-    { id: "n71", cat: "noun", es: "la pelota", en: "ball" },
-    { id: "n72", cat: "noun", es: "el equipo", en: "team" },
-    { id: "n73", cat: "noun", es: "el partido", en: "match / game" },
-    { id: "n74", cat: "noun", es: "el gol", en: "goal" },
-    { id: "n75", cat: "noun", es: "la carrera", en: "race / career" },
-    { id: "n76", cat: "noun", es: "el cuerpo", en: "body" },
-    { id: "n77", cat: "noun", es: "la cara", en: "face" },
-    { id: "n78", cat: "noun", es: "el pelo", en: "hair" },
-    { id: "n79", cat: "noun", es: "la boca", en: "mouth" },
-    { id: "n80", cat: "noun", es: "el diente", en: "tooth" },
-    { id: "n81", cat: "noun", es: "el hombro", en: "shoulder" },
-    { id: "n82", cat: "noun", es: "el pecho", en: "chest" },
-    { id: "n83", cat: "noun", es: "la barriga", en: "belly" },
-    { id: "n84", cat: "noun", es: "la sangre", en: "blood" },
-    { id: "n85", cat: "noun", es: "el dolor", en: "pain" },
-    { id: "n86", cat: "noun", es: "la salud", en: "health" },
-    { id: "n87", cat: "noun", es: "el médico", en: "doctor" },
-    { id: "n88", cat: "noun", es: "la medicina", en: "medicine" },
-    { id: "n89", cat: "noun", es: "el hospital", en: "hospital" },
-    { id: "n90", cat: "noun", es: "la farmacia", en: "pharmacy" },
-    { id: "n91", cat: "noun", es: "la comida", en: "food" },
-    { id: "n92", cat: "noun", es: "el desayuno", en: "breakfast" },
-    { id: "n93", cat: "noun", es: "el almuerzo", en: "lunch" },
-    { id: "n94", cat: "noun", es: "la cena", en: "dinner" },
-    { id: "n95", cat: "noun", es: "el plato", en: "plate / dish" },
-    { id: "n96", cat: "noun", es: "el vaso", en: "glass" },
-    { id: "n97", cat: "noun", es: "la taza", en: "cup" },
-    { id: "n98", cat: "noun", es: "la botella", en: "bottle" },
-    { id: "n99", cat: "noun", es: "el cuchillo", en: "knife" },
-    { id: "n100", cat: "noun", es: "la cuchara", en: "spoon" },
-    { id: "n101", cat: "noun", es: "el tenedor", en: "fork" },
-    { id: "n102", cat: "noun", es: "la sal", en: "salt" },
-    { id: "n103", cat: "noun", es: "el azúcar", en: "sugar" },
-    { id: "n104", cat: "noun", es: "el aceite", en: "oil" },
-    { id: "n105", cat: "noun", es: "la carne", en: "meat" },
-    { id: "n106", cat: "noun", es: "el pollo", en: "chicken" },
-    { id: "n107", cat: "noun", es: "la fruta", en: "fruit" },
-    { id: "n108", cat: "noun", es: "la verdura", en: "vegetable" },
-    { id: "n109", cat: "noun", es: "el tomate", en: "tomato" },
-    { id: "n110", cat: "noun", es: "la patata", en: "potato" },
-    { id: "n111", cat: "noun", es: "el pescado", en: "fish" },
-    { id: "n112", cat: "noun", es: "el marisco", en: "seafood" },
-    { id: "n113", cat: "noun", es: "el vino", en: "wine" },
-    { id: "n114", cat: "noun", es: "la cerveza", en: "beer" },
-    { id: "n115", cat: "noun", es: "el zumo", en: "juice" },
-    { id: "n116", cat: "noun", es: "el árbol", en: "tree" },
-    { id: "n117", cat: "noun", es: "la flor", en: "flower" },
-    { id: "n118", cat: "noun", es: "el bosque", en: "forest" },
-    { id: "n119", cat: "noun", es: "la montaña", en: "mountain" },
-    { id: "n120", cat: "noun", es: "el río", en: "river" },
-    { id: "n121", cat: "noun", es: "el lago", en: "lake" },
-    { id: "n122", cat: "noun", es: "el mar", en: "sea" },
-    { id: "n123", cat: "noun", es: "la isla", en: "island" },
-    { id: "n124", cat: "noun", es: "el cielo", en: "sky" },
-    { id: "n125", cat: "noun", es: "la tierra", en: "earth / land" },
-    { id: "n126", cat: "noun", es: "el aire", en: "air" },
-    { id: "n127", cat: "noun", es: "el fuego", en: "fire" },
-    { id: "n128", cat: "noun", es: "la luz", en: "light" },
-    { id: "n129", cat: "noun", es: "la sombra", en: "shadow" },
-    { id: "n130", cat: "noun", es: "la estrella", en: "star" },
-    { id: "n131", cat: "noun", es: "el día", en: "day" },
-    { id: "n132", cat: "noun", es: "la noche", en: "night" },
-    { id: "n133", cat: "noun", es: "la mañana", en: "morning" },
-    { id: "n134", cat: "noun", es: "la tarde", en: "afternoon" },
-    { id: "n135", cat: "noun", es: "la semana", en: "week" },
-    { id: "n136", cat: "noun", es: "el mes", en: "month" },
-    { id: "n137", cat: "noun", es: "el año", en: "year" },
-    { id: "n138", cat: "noun", es: "la hora", en: "hour" },
-    { id: "n139", cat: "noun", es: "el minuto", en: "minute" },
-    { id: "n140", cat: "noun", es: "el momento", en: "moment" },
-    { id: "n141", cat: "noun", es: "la vez", en: "time / occasion" },
-    { id: "n142", cat: "noun", es: "la vida", en: "life" },
-    { id: "n143", cat: "noun", es: "la historia", en: "history / story" },
-    { id: "n144", cat: "noun", es: "el futuro", en: "future" },
-    { id: "n145", cat: "noun", es: "el pasado", en: "past" },
-    { id: "n146", cat: "noun", es: "el presente", en: "present" },
-    { id: "n147", cat: "noun", es: "la suerte", en: "luck" },
-    { id: "n148", cat: "noun", es: "el sueño", en: "dream / sleep" },
-    { id: "n149", cat: "noun", es: "la verdad", en: "truth" },
-    { id: "n150", cat: "noun", es: "la mentira", en: "lie" },
-    { id: "n151", cat: "noun", es: "el secreto", en: "secret" },
-    { id: "n152", cat: "noun", es: "la ayuda", en: "help" },
-    { id: "n153", cat: "noun", es: "el cambio", en: "change" },
-    { id: "n154", cat: "noun", es: "el éxito", en: "success" },
-    { id: "n155", cat: "noun", es: "el fracaso", en: "failure" },
-    { id: "n156", cat: "noun", es: "la oportunidad", en: "opportunity" },
-    { id: "n157", cat: "noun", es: "el dinero", en: "money" },
-    { id: "n158", cat: "noun", es: "el precio", en: "price" },
-    { id: "n159", cat: "noun", es: "la cuenta", en: "bill / account" },
-    { id: "n160", cat: "noun", es: "el banco", en: "bank" },
-    { id: "n161", cat: "noun", es: "la tarjeta", en: "card" },
-    { id: "n162", cat: "noun", es: "el trabajo", en: "job / work" },
-    { id: "n163", cat: "noun", es: "el negocio", en: "business" },
-    { id: "n164", cat: "noun", es: "la empresa", en: "company" },
-    { id: "n165", cat: "noun", es: "el cliente", en: "customer" },
-    { id: "n166", cat: "noun", es: "el jefe", en: "boss" },
-    { id: "n167", cat: "noun", es: "el compañero", en: "colleague" },
-    { id: "n168", cat: "noun", es: "la reunión", en: "meeting" },
-    { id: "n169", cat: "noun", es: "el proyecto", en: "project" },
-    { id: "n170", cat: "noun", es: "la tarea", en: "task" },
-    { id: "n171", cat: "noun", es: "la clase", en: "class" },
-    { id: "n172", cat: "noun", es: "el curso", en: "course" },
-    { id: "n173", cat: "noun", es: "el examen", en: "exam" },
-    { id: "n174", cat: "noun", es: "la universidad", en: "university" },
-    { id: "n175", cat: "noun", es: "el estudiante", en: "student" },
-    { id: "n176", cat: "noun", es: "el profesor", en: "teacher" },
-    { id: "n177", cat: "noun", es: "el papel", en: "paper" },
-    { id: "n178", cat: "noun", es: "el lápiz", en: "pencil" },
-    { id: "n179", cat: "noun", es: "la página", en: "page" },
-    { id: "n180", cat: "noun", es: "el libro", en: "book" },
-    { id: "n181", cat: "noun", es: "la mesa", en: "table" },
-    { id: "n182", cat: "noun", es: "la cama", en: "bed" },
-    { id: "n183", cat: "noun", es: "el sofá", en: "sofa" },
-    { id: "n184", cat: "noun", es: "la llave", en: "key" },
-    { id: "n185", cat: "noun", es: "el reloj", en: "clock / watch" },
-    { id: "n186", cat: "noun", es: "el regalo", en: "gift" },
-    { id: "n187", cat: "noun", es: "la fiesta", en: "party" },
-    { id: "n188", cat: "noun", es: "la boda", en: "wedding" },
-    { id: "n189", cat: "noun", es: "el cumpleaños", en: "birthday" },
-    { id: "n190", cat: "noun", es: "la familia", en: "family" },
-    { id: "n191", cat: "noun", es: "el vecino", en: "neighbor" },
-    { id: "n192", cat: "noun", es: "la pareja", en: "couple / partner" },
-    { id: "n193", cat: "noun", es: "el marido", en: "husband" },
-    { id: "n194", cat: "noun", es: "la esposa", en: "wife" },
-    { id: "n195", cat: "noun", es: "el amigo", en: "friend" },
-    { id: "n196", cat: "noun", es: "la amiga", en: "female friend" },
-    { id: "n197", cat: "noun", es: "el animal", en: "animal" },
-    { id: "n198", cat: "noun", es: "el perro", en: "dog" },
-    { id: "n199", cat: "noun", es: "el gato", en: "cat" },
-    { id: "n200", cat: "noun", es: "el pájaro", en: "bird" },
-    { id: "a21", cat: "adjective", es: "bueno", en: "good" },
-    { id: "a22", cat: "adjective", es: "malo", en: "bad" },
-    { id: "a23", cat: "adjective", es: "mejor", en: "better" },
-    { id: "a24", cat: "adjective", es: "peor", en: "worse" },
-    { id: "a25", cat: "adjective", es: "bonito", en: "pretty" },
-    { id: "a26", cat: "adjective", es: "feo", en: "ugly" },
-    { id: "a27", cat: "adjective", es: "joven", en: "young" },
-    { id: "a28", cat: "adjective", es: "anciano", en: "elderly" },
-    { id: "a29", cat: "adjective", es: "nuevo", en: "new" },
-    { id: "a30", cat: "adjective", es: "antiguo", en: "old / ancient" },
-    { id: "a31", cat: "adjective", es: "moderno", en: "modern" },
-    { id: "a32", cat: "adjective", es: "importante", en: "important" },
-    { id: "a33", cat: "adjective", es: "necesario", en: "necessary" },
-    { id: "a34", cat: "adjective", es: "posible", en: "possible" },
-    { id: "a35", cat: "adjective", es: "imposible", en: "impossible" },
-    { id: "a36", cat: "adjective", es: "fácil", en: "easy" },
-    { id: "a37", cat: "adjective", es: "difícil", en: "difficult" },
-    { id: "a38", cat: "adjective", es: "simple", en: "simple" },
-    { id: "a39", cat: "adjective", es: "complicado", en: "complicated" },
-    { id: "a40", cat: "adjective", es: "claro", en: "clear / light" },
-    { id: "a41", cat: "adjective", es: "oscuro", en: "dark" },
-    { id: "a42", cat: "adjective", es: "limpio", en: "clean" },
-    { id: "a43", cat: "adjective", es: "sucio", en: "dirty" },
-    { id: "a44", cat: "adjective", es: "lleno", en: "full" },
-    { id: "a45", cat: "adjective", es: "vacío", en: "empty" },
-    { id: "a46", cat: "adjective", es: "abierto", en: "open" },
-    { id: "a47", cat: "adjective", es: "cerrado", en: "closed" },
-    { id: "a48", cat: "adjective", es: "libre", en: "free" },
-    { id: "a49", cat: "adjective", es: "ocupado", en: "busy" },
-    { id: "a50", cat: "adjective", es: "cansado", en: "tired" },
-    { id: "a51", cat: "adjective", es: "enfermo", en: "sick" },
-    { id: "a52", cat: "adjective", es: "sano", en: "healthy" },
-    { id: "a53", cat: "adjective", es: "fuerte", en: "strong" },
-    { id: "a54", cat: "adjective", es: "débil", en: "weak" },
-    { id: "a55", cat: "adjective", es: "rápido", en: "fast" },
-    { id: "a56", cat: "adjective", es: "lento", en: "slow" },
-    { id: "a57", cat: "adjective", es: "alto", en: "tall / high" },
-    { id: "a58", cat: "adjective", es: "bajo", en: "short / low" },
-    { id: "a59", cat: "adjective", es: "largo", en: "long" },
-    { id: "a60", cat: "adjective", es: "corto", en: "short" },
-    { id: "a61", cat: "adjective", es: "ancho", en: "wide" },
-    { id: "a62", cat: "adjective", es: "estrecho", en: "narrow" },
-    { id: "a63", cat: "adjective", es: "grande", en: "big" },
-    { id: "a64", cat: "adjective", es: "pequeño", en: "small" },
-    { id: "a65", cat: "adjective", es: "grueso", en: "thick" },
-    { id: "a66", cat: "adjective", es: "fino", en: "thin" },
-    { id: "a67", cat: "adjective", es: "pesado", en: "heavy" },
-    { id: "a68", cat: "adjective", es: "ligero", en: "lightweight" },
-    { id: "a69", cat: "adjective", es: "duro", en: "hard" },
-    { id: "a70", cat: "adjective", es: "blando", en: "soft" },
-    { id: "a71", cat: "adjective", es: "caliente", en: "hot" },
-    { id: "a72", cat: "adjective", es: "frío", en: "cold" },
-    { id: "a73", cat: "adjective", es: "fresco", en: "fresh / cool" },
-    { id: "a74", cat: "adjective", es: "seco", en: "dry" },
-    { id: "a75", cat: "adjective", es: "mojado", en: "wet" },
-    { id: "a76", cat: "adjective", es: "dulce", en: "sweet" },
-    { id: "a77", cat: "adjective", es: "salado", en: "salty" },
-    { id: "a78", cat: "adjective", es: "amargo", en: "bitter" },
-    { id: "a79", cat: "adjective", es: "ácido", en: "sour" },
-    { id: "a80", cat: "adjective", es: "rico", en: "rich / delicious" },
-    { id: "a81", cat: "adjective", es: "pobre", en: "poor" },
-    { id: "a82", cat: "adjective", es: "caro", en: "expensive" },
-    { id: "a83", cat: "adjective", es: "barato", en: "cheap" },
-    { id: "a84", cat: "adjective", es: "feliz", en: "happy" },
-    { id: "a85", cat: "adjective", es: "triste", en: "sad" },
-    { id: "a86", cat: "adjective", es: "alegre", en: "cheerful" },
-    { id: "a87", cat: "adjective", es: "enfadado", en: "angry" },
-    { id: "a88", cat: "adjective", es: "tranquilo", en: "calm" },
-    { id: "a89", cat: "adjective", es: "nervioso", en: "nervous" },
-    { id: "a90", cat: "adjective", es: "preocupado", en: "worried" },
-    { id: "a91", cat: "adjective", es: "sorprendido", en: "surprised" },
-    { id: "a92", cat: "adjective", es: "orgulloso", en: "proud" },
-    { id: "a93", cat: "adjective", es: "avergonzado", en: "embarrassed" },
-    { id: "a94", cat: "adjective", es: "amable", en: "kind" },
-    { id: "a95", cat: "adjective", es: "simpático", en: "nice / friendly" },
-    { id: "a96", cat: "adjective", es: "antipático", en: "unfriendly" },
-    { id: "a97", cat: "adjective", es: "generoso", en: "generous" },
-    { id: "a98", cat: "adjective", es: "egoísta", en: "selfish" },
-    { id: "a99", cat: "adjective", es: "honesto", en: "honest" },
-    { id: "a100", cat: "adjective", es: "serio", en: "serious" },
-    { id: "a101", cat: "adjective", es: "divertido", en: "funny / fun" },
-    { id: "a102", cat: "adjective", es: "aburrido", en: "boring / bored" },
-    { id: "a103", cat: "adjective", es: "interesante", en: "interesting" },
-    { id: "a104", cat: "adjective", es: "inteligente", en: "smart" },
-    { id: "a105", cat: "adjective", es: "tonto", en: "silly / foolish" },
-    { id: "a106", cat: "adjective", es: "listo", en: "clever / ready" },
-    { id: "a107", cat: "adjective", es: "valiente", en: "brave" },
-    { id: "a108", cat: "adjective", es: "cobarde", en: "cowardly" },
-    { id: "a109", cat: "adjective", es: "famoso", en: "famous" },
-    { id: "a110", cat: "adjective", es: "popular", en: "popular" },
-    { id: "a111", cat: "adjective", es: "especial", en: "special" },
-    { id: "a112", cat: "adjective", es: "normal", en: "normal" },
-    { id: "a113", cat: "adjective", es: "raro", en: "strange" },
-    { id: "a114", cat: "adjective", es: "diferente", en: "different" },
-    { id: "a115", cat: "adjective", es: "igual", en: "same" },
-    { id: "a116", cat: "adjective", es: "correcto", en: "correct" },
-    { id: "a117", cat: "adjective", es: "incorrecto", en: "incorrect" },
-    { id: "a118", cat: "adjective", es: "verdadero", en: "true" },
-    { id: "a119", cat: "adjective", es: "falso", en: "false" },
-    { id: "a120", cat: "adjective", es: "real", en: "real" },
-    { id: "a121", cat: "adjective", es: "seguro", en: "safe / sure" },
-    { id: "a122", cat: "adjective", es: "peligroso", en: "dangerous" },
-    { id: "a123", cat: "adjective", es: "público", en: "public" },
-    { id: "a124", cat: "adjective", es: "privado", en: "private" },
-    { id: "a125", cat: "adjective", es: "local", en: "local" },
-    { id: "a126", cat: "adjective", es: "internacional", en: "international" },
-    { id: "a127", cat: "adjective", es: "nacional", en: "national" },
-    { id: "a128", cat: "adjective", es: "personal", en: "personal" },
-    { id: "a129", cat: "adjective", es: "social", en: "social" },
-    { id: "a130", cat: "adjective", es: "natural", en: "natural" },
-    { id: "a131", cat: "adjective", es: "artificial", en: "artificial" },
-    { id: "a132", cat: "adjective", es: "verde", en: "green" },
-    { id: "a133", cat: "adjective", es: "rojo", en: "red" },
-    { id: "a134", cat: "adjective", es: "azul", en: "blue" },
-    { id: "a135", cat: "adjective", es: "blanco", en: "white" },
-    { id: "a136", cat: "adjective", es: "negro", en: "black" },
-    { id: "a137", cat: "adjective", es: "amarillo", en: "yellow" },
-    { id: "a138", cat: "adjective", es: "gris", en: "gray" },
-    { id: "a139", cat: "adjective", es: "marrón", en: "brown" },
-    { id: "a140", cat: "adjective", es: "rosa", en: "pink" },
-    { id: "a141", cat: "adjective", es: "morado", en: "purple" },
-    { id: "a142", cat: "adjective", es: "brillante", en: "bright / shiny" },
-    { id: "a143", cat: "adjective", es: "pálido", en: "pale" },
-    { id: "a144", cat: "adjective", es: "colorido", en: "colorful" },
-    { id: "a145", cat: "adjective", es: "soleado", en: "sunny" },
-    { id: "a146", cat: "adjective", es: "nublado", en: "cloudy" },
-    { id: "a147", cat: "adjective", es: "húmedo", en: "humid" },
-    { id: "a148", cat: "adjective", es: "templado", en: "mild" },
-    { id: "a149", cat: "adjective", es: "caluroso", en: "hot" },
-    { id: "a150", cat: "adjective", es: "lluvioso", en: "rainy" },
-    { id: "a151", cat: "adjective", es: "ventoso", en: "windy" },
-    { id: "a152", cat: "adjective", es: "semanal", en: "weekly" },
-    { id: "a153", cat: "adjective", es: "diario", en: "daily" },
-    { id: "a154", cat: "adjective", es: "mensual", en: "monthly" },
-    { id: "a155", cat: "adjective", es: "anual", en: "annual" },
-    { id: "a156", cat: "adjective", es: "primero", en: "first" },
-    { id: "a157", cat: "adjective", es: "último", en: "last" },
-    { id: "a158", cat: "adjective", es: "próximo", en: "next" },
-    { id: "a159", cat: "adjective", es: "anterior", en: "previous" },
-    { id: "a160", cat: "adjective", es: "único", en: "unique" },
-    { id: "a161", cat: "adjective", es: "principal", en: "main" },
-    { id: "a162", cat: "adjective", es: "general", en: "general" },
-    { id: "a163", cat: "adjective", es: "completo", en: "complete" },
-    { id: "a164", cat: "adjective", es: "medio", en: "half / average" },
-    { id: "a165", cat: "adjective", es: "entero", en: "whole" },
-    { id: "a166", cat: "adjective", es: "suficiente", en: "enough" },
-    { id: "a167", cat: "adjective", es: "varios", en: "several" },
-    { id: "a168", cat: "adjective", es: "mucho", en: "much / a lot" },
-    { id: "a169", cat: "adjective", es: "poco", en: "little / few" },
-    { id: "a170", cat: "adjective", es: "mismo", en: "same" },
-    { id: "a171", cat: "adjective", es: "otro", en: "other" },
-    { id: "a172", cat: "adjective", es: "cierto", en: "certain" },
-    { id: "a173", cat: "adjective", es: "útil", en: "useful" },
-    { id: "a174", cat: "adjective", es: "inútil", en: "useless" },
-    { id: "a175", cat: "adjective", es: "profundo", en: "deep" },
-    { id: "a176", cat: "adjective", es: "superficial", en: "superficial" },
-    { id: "a177", cat: "adjective", es: "cercano", en: "near" },
-    { id: "a178", cat: "adjective", es: "lejano", en: "far" },
-    { id: "a179", cat: "adjective", es: "familiar", en: "familiar" },
-    { id: "a180", cat: "adjective", es: "extranjero", en: "foreign" },
-    { id: "a181", cat: "adjective", es: "elegante", en: "elegant" },
-    { id: "a182", cat: "adjective", es: "cómodo", en: "comfortable" },
-    { id: "a183", cat: "adjective", es: "incómodo", en: "uncomfortable" },
-    { id: "a184", cat: "adjective", es: "ajustado", en: "tight-fitting" },
-    { id: "a185", cat: "adjective", es: "espacioso", en: "spacious" },
-    { id: "a186", cat: "adjective", es: "acogedor", en: "cozy" },
-    { id: "a187", cat: "adjective", es: "silencioso", en: "quiet" },
-    { id: "a188", cat: "adjective", es: "ruidoso", en: "noisy" },
-    { id: "a189", cat: "adjective", es: "sencillo", en: "simple" },
-    { id: "a190", cat: "adjective", es: "común", en: "common" },
-    { id: "a191", cat: "adjective", es: "extraño", en: "strange" },
-    { id: "a192", cat: "adjective", es: "futuro", en: "future" },
-    { id: "a193", cat: "adjective", es: "pasado", en: "past" },
-    { id: "a194", cat: "adjective", es: "actual", en: "current" },
-    { id: "v21", cat: "verb", es: "ser", en: "to be" },
-    { id: "v22", cat: "verb", es: "estar", en: "to be" },
-    { id: "v23", cat: "verb", es: "tener", en: "to have" },
-    { id: "v24", cat: "verb", es: "hacer", en: "to do / make" },
-    { id: "v25", cat: "verb", es: "ir", en: "to go" },
-    { id: "v26", cat: "verb", es: "venir", en: "to come" },
-    { id: "v27", cat: "verb", es: "decir", en: "to say / tell" },
-    { id: "v28", cat: "verb", es: "dar", en: "to give" },
-    { id: "v29", cat: "verb", es: "saber", en: "to know" },
-    { id: "v30", cat: "verb", es: "conocer", en: "to know / meet" },
-    { id: "v31", cat: "verb", es: "ver", en: "to see" },
-    { id: "v32", cat: "verb", es: "oír", en: "to hear" },
-    { id: "v33", cat: "verb", es: "poner", en: "to put" },
-    { id: "v34", cat: "verb", es: "salir", en: "to leave / go out" },
-    { id: "v35", cat: "verb", es: "llegar", en: "to arrive" },
-    { id: "v36", cat: "verb", es: "pasar", en: "to pass / spend" },
-    { id: "v37", cat: "verb", es: "dejar", en: "to leave / let" },
-    { id: "v38", cat: "verb", es: "llevar", en: "to carry / wear" },
-    { id: "v39", cat: "verb", es: "traer", en: "to bring" },
-    { id: "v40", cat: "verb", es: "encontrar", en: "to find" },
-    { id: "v41", cat: "verb", es: "buscar", en: "to look for" },
-    { id: "v42", cat: "verb", es: "usar", en: "to use" },
-    { id: "v43", cat: "verb", es: "necesitar", en: "to need" },
-    { id: "v44", cat: "verb", es: "querer", en: "to want / love" },
-    { id: "v45", cat: "verb", es: "poder", en: "to be able to" },
-    { id: "v46", cat: "verb", es: "deber", en: "to have to / owe" },
-    { id: "v47", cat: "verb", es: "creer", en: "to believe" },
-    { id: "v48", cat: "verb", es: "parecer", en: "to seem" },
-    { id: "v49", cat: "verb", es: "sentir", en: "to feel" },
-    { id: "v50", cat: "verb", es: "seguir", en: "to follow / continue" },
-    { id: "v51", cat: "verb", es: "volver", en: "to return" },
-    { id: "v52", cat: "verb", es: "empezar", en: "to begin" },
-    { id: "v53", cat: "verb", es: "terminar", en: "to finish" },
-    { id: "v54", cat: "verb", es: "continuar", en: "to continue" },
-    { id: "v55", cat: "verb", es: "esperar", en: "to wait / hope" },
-    { id: "v56", cat: "verb", es: "recibir", en: "to receive" },
-    { id: "v57", cat: "verb", es: "enviar", en: "to send" },
-    { id: "v58", cat: "verb", es: "abrir", en: "to open" },
-    { id: "v59", cat: "verb", es: "cerrar", en: "to close" },
-    { id: "v60", cat: "verb", es: "entrar", en: "to enter" },
-    { id: "v61", cat: "verb", es: "subir", en: "to go up" },
-    { id: "v62", cat: "verb", es: "bajar", en: "to go down" },
-    { id: "v63", cat: "verb", es: "caminar", en: "to walk" },
-    { id: "v64", cat: "verb", es: "andar", en: "to walk / go" },
-    { id: "v65", cat: "verb", es: "conducir", en: "to drive" },
-    { id: "v66", cat: "verb", es: "parar", en: "to stop" },
-    { id: "v67", cat: "verb", es: "cambiar", en: "to change" },
-    { id: "v68", cat: "verb", es: "decidir", en: "to decide" },
-    { id: "v69", cat: "verb", es: "elegir", en: "to choose" },
-    { id: "v70", cat: "verb", es: "aprender", en: "to learn" },
-    { id: "v71", cat: "verb", es: "enseñar", en: "to teach" },
-    { id: "v72", cat: "verb", es: "recordar", en: "to remember" },
-    { id: "v73", cat: "verb", es: "olvidar", en: "to forget" },
-    { id: "v74", cat: "verb", es: "explicar", en: "to explain" },
-    { id: "v75", cat: "verb", es: "preguntar", en: "to ask" },
-    { id: "v76", cat: "verb", es: "responder", en: "to answer" },
-    { id: "v77", cat: "verb", es: "contestar", en: "to answer" },
-    { id: "v78", cat: "verb", es: "llamar", en: "to call" },
-    { id: "v79", cat: "verb", es: "escuchar", en: "to listen" },
-    { id: "v80", cat: "verb", es: "hablar", en: "to speak" },
-    { id: "v81", cat: "verb", es: "contar", en: "to tell / count" },
-    { id: "v82", cat: "verb", es: "leer", en: "to read" },
-    { id: "v83", cat: "verb", es: "escribir", en: "to write" },
-    { id: "v84", cat: "verb", es: "dibujar", en: "to draw" },
-    { id: "v85", cat: "verb", es: "mostrar", en: "to show" },
-    { id: "v86", cat: "verb", es: "mirar", en: "to look / watch" },
-    { id: "v87", cat: "verb", es: "observar", en: "to observe" },
-    { id: "v88", cat: "verb", es: "pensar", en: "to think" },
-    { id: "v89", cat: "verb", es: "imaginar", en: "to imagine" },
-    { id: "v90", cat: "verb", es: "entender", en: "to understand" },
-    { id: "v91", cat: "verb", es: "comprender", en: "to understand" },
-    { id: "v92", cat: "verb", es: "estudiar", en: "to study" },
-    { id: "v93", cat: "verb", es: "trabajar", en: "to work" },
-    { id: "v94", cat: "verb", es: "descansar", en: "to rest" },
-    { id: "v95", cat: "verb", es: "vivir", en: "to live" },
-    { id: "v96", cat: "verb", es: "morir", en: "to die" },
-    { id: "v97", cat: "verb", es: "nacer", en: "to be born" },
-    { id: "v98", cat: "verb", es: "crecer", en: "to grow" },
-    { id: "v99", cat: "verb", es: "cuidar", en: "to take care of" },
-    { id: "v100", cat: "verb", es: "ayudar", en: "to help" },
-    { id: "v101", cat: "verb", es: "saludar", en: "to greet" },
-    { id: "v102", cat: "verb", es: "invitar", en: "to invite" },
-    { id: "v103", cat: "verb", es: "visitar", en: "to visit" },
-    { id: "v104", cat: "verb", es: "viajar", en: "to travel" },
-    { id: "v105", cat: "verb", es: "volar", en: "to fly" },
-    { id: "v106", cat: "verb", es: "reservar", en: "to book" },
-    { id: "v107", cat: "verb", es: "pagar", en: "to pay" },
-    { id: "v108", cat: "verb", es: "comprar", en: "to buy" },
-    { id: "v109", cat: "verb", es: "vender", en: "to sell" },
-    { id: "v110", cat: "verb", es: "costar", en: "to cost" },
-    { id: "v111", cat: "verb", es: "ganar", en: "to win / earn" },
-    { id: "v112", cat: "verb", es: "perder", en: "to lose" },
-    { id: "v113", cat: "verb", es: "ahorrar", en: "to save money" },
-    { id: "v114", cat: "verb", es: "gastar", en: "to spend" },
-    { id: "v115", cat: "verb", es: "cocinar", en: "to cook" },
-    { id: "v116", cat: "verb", es: "preparar", en: "to prepare" },
-    { id: "v117", cat: "verb", es: "comer", en: "to eat" },
-    { id: "v118", cat: "verb", es: "beber", en: "to drink" },
-    { id: "v119", cat: "verb", es: "probar", en: "to try / taste" },
-    { id: "v120", cat: "verb", es: "cortar", en: "to cut" },
-    { id: "v121", cat: "verb", es: "lavar", en: "to wash" },
-    { id: "v122", cat: "verb", es: "limpiar", en: "to clean" },
-    { id: "v123", cat: "verb", es: "dormir", en: "to sleep" },
-    { id: "v124", cat: "verb", es: "despertarse", en: "to wake up" },
-    { id: "v125", cat: "verb", es: "levantarse", en: "to get up" },
-    { id: "v126", cat: "verb", es: "sentarse", en: "to sit down" },
-    { id: "v127", cat: "verb", es: "acostarse", en: "to go to bed" },
-    { id: "v128", cat: "verb", es: "vestirse", en: "to get dressed" },
-    { id: "v129", cat: "verb", es: "ponerse", en: "to put on" },
-    { id: "v130", cat: "verb", es: "quitarse", en: "to take off" },
-    { id: "v131", cat: "verb", es: "ducharse", en: "to shower" },
-    { id: "v132", cat: "verb", es: "bañarse", en: "to bathe" },
-    { id: "v133", cat: "verb", es: "cepillarse", en: "to brush oneself" },
-    { id: "v134", cat: "verb", es: "correr", en: "to run" },
-    { id: "v135", cat: "verb", es: "nadar", en: "to swim" },
-    { id: "v136", cat: "verb", es: "saltar", en: "to jump" },
-    { id: "v137", cat: "verb", es: "jugar", en: "to play" },
-    { id: "v138", cat: "verb", es: "bailar", en: "to dance" },
-    { id: "v139", cat: "verb", es: "cantar", en: "to sing" },
-    { id: "v140", cat: "verb", es: "tocar", en: "to touch / play an instrument" },
-    { id: "v141", cat: "verb", es: "practicar", en: "to practice" },
-    { id: "v142", cat: "verb", es: "entrenar", en: "to train" },
-    { id: "v143", cat: "verb", es: "reír", en: "to laugh" },
-    { id: "v144", cat: "verb", es: "sonreír", en: "to smile" },
-    { id: "v145", cat: "verb", es: "llorar", en: "to cry" },
-    { id: "v146", cat: "verb", es: "amar", en: "to love" },
-    { id: "v147", cat: "verb", es: "odiar", en: "to hate" },
-    { id: "v148", cat: "verb", es: "gustar", en: "to like" },
-    { id: "v149", cat: "verb", es: "preferir", en: "to prefer" },
-    { id: "v150", cat: "verb", es: "temer", en: "to fear" },
-    { id: "v151", cat: "verb", es: "preocuparse", en: "to worry" },
-    { id: "v152", cat: "verb", es: "alegrarse", en: "to be glad" },
-    { id: "v153", cat: "verb", es: "enfadarse", en: "to get angry" },
-    { id: "v154", cat: "verb", es: "relajarse", en: "to relax" },
-    { id: "v155", cat: "verb", es: "sentirse", en: "to feel" },
-    { id: "v156", cat: "verb", es: "existir", en: "to exist" },
-    { id: "v157", cat: "verb", es: "ocurrir", en: "to happen" },
-    { id: "v158", cat: "verb", es: "suceder", en: "to happen" },
-    { id: "v159", cat: "verb", es: "funcionar", en: "to work / function" },
-    { id: "v160", cat: "verb", es: "servir", en: "to serve / be useful" },
-    { id: "v161", cat: "verb", es: "crear", en: "to create" },
-    { id: "v162", cat: "verb", es: "construir", en: "to build" },
-    { id: "v163", cat: "verb", es: "romper", en: "to break" },
-    { id: "v164", cat: "verb", es: "arreglar", en: "to fix" },
-    { id: "v165", cat: "verb", es: "intentar", en: "to try" },
-    { id: "v166", cat: "verb", es: "lograr", en: "to achieve" },
-    { id: "v167", cat: "verb", es: "conseguir", en: "to get / achieve" },
-    { id: "v168", cat: "verb", es: "permitir", en: "to allow" },
-    { id: "v169", cat: "verb", es: "prohibir", en: "to forbid" },
-    { id: "v170", cat: "verb", es: "evitar", en: "to avoid" },
-    { id: "v171", cat: "verb", es: "aceptar", en: "to accept" },
-    { id: "v172", cat: "verb", es: "rechazar", en: "to reject" },
-    { id: "v173", cat: "verb", es: "ofrecer", en: "to offer" },
-    { id: "v174", cat: "verb", es: "prometer", en: "to promise" },
-    { id: "v175", cat: "verb", es: "cumplir", en: "to fulfill" },
-    { id: "v176", cat: "verb", es: "apagar", en: "to turn off" },
-    { id: "v177", cat: "verb", es: "encender", en: "to turn on" },
-    { id: "v178", cat: "verb", es: "conectar", en: "to connect" },
-    { id: "v179", cat: "verb", es: "desconectar", en: "to disconnect" },
-    { id: "v180", cat: "verb", es: "descubrir", en: "to discover" },
-    { id: "v181", cat: "verb", es: "explorar", en: "to explore" },
-    { id: "v182", cat: "verb", es: "perseguir", en: "to chase" },
-    { id: "v183", cat: "verb", es: "proteger", en: "to protect" },
-    { id: "v184", cat: "verb", es: "compartir", en: "to share" },
-    { id: "v185", cat: "verb", es: "unir", en: "to join / unite" },
-    { id: "v186", cat: "verb", es: "separar", en: "to separate" },
-    { id: "v187", cat: "verb", es: "repetir", en: "to repeat" },
-    { id: "v188", cat: "verb", es: "traducir", en: "to translate" },
-    { id: "v189", cat: "verb", es: "pronunciar", en: "to pronounce" },
-    { id: "v190", cat: "verb", es: "mejorar", en: "to improve" },
-
-    // Topic: Food
-    { id: "f1", cat: "food", es: "el pan", en: "bread" },
-    { id: "f2", cat: "food", es: "el queso", en: "cheese" },
-    { id: "f3", cat: "food", es: "la fruta", en: "fruit" },
-    { id: "f4", cat: "food", es: "la carne", en: "meat" },
-    { id: "f5", cat: "food", es: "el pescado", en: "fish" },
-    { id: "f6", cat: "food", es: "el arroz", en: "rice" },
-    { id: "f7", cat: "food", es: "la sopa", en: "soup" },
-    { id: "f8", cat: "food", es: "el huevo", en: "egg" },
-    { id: "f9", cat: "food", es: "la leche", en: "milk" },
-    { id: "f10", cat: "food", es: "el café", en: "coffee" },
-    { id: "f11", cat: "food", es: "el té", en: "tea" },
-    { id: "f12", cat: "food", es: "la manzana", en: "apple" },
-    { id: "f13", cat: "food", es: "el plátano", en: "banana" },
-    { id: "f14", cat: "food", es: "la naranja", en: "orange (fruit)" },
-    { id: "f15", cat: "food", es: "la verdura", en: "vegetable" },
-    { id: "f16", cat: "food", es: "el postre", en: "dessert" },
-    { id: "f17", cat: "food", es: "desayunar", en: "to have breakfast" },
-    { id: "f18", cat: "food", es: "almorzar", en: "to have lunch" },
-    { id: "f19", cat: "food", es: "cenar", en: "to have dinner" },
-    { id: "f20", cat: "food", es: "delicioso", en: "delicious" },
-
-    // Topic: Travel
-    { id: "tr1", cat: "travel", es: "el aeropuerto", en: "airport" },
-    { id: "tr2", cat: "travel", es: "el avión", en: "airplane" },
-    { id: "tr3", cat: "travel", es: "el billete", en: "ticket" },
-    { id: "tr4", cat: "travel", es: "la maleta", en: "suitcase" },
-    { id: "tr5", cat: "travel", es: "el pasaporte", en: "passport" },
-    { id: "tr6", cat: "travel", es: "el hotel", en: "hotel" },
-    { id: "tr7", cat: "travel", es: "la reserva", en: "reservation" },
-    { id: "tr8", cat: "travel", es: "el mapa", en: "map" },
-    { id: "tr9", cat: "travel", es: "la frontera", en: "border" },
-    { id: "tr10", cat: "travel", es: "el turista", en: "tourist" },
-    { id: "tr11", cat: "travel", es: "volar", en: "to fly" },
-    { id: "tr12", cat: "travel", es: "reservar", en: "to book" },
-    { id: "tr13", cat: "travel", es: "llegar", en: "to arrive" },
-    { id: "tr14", cat: "travel", es: "salir", en: "to leave / depart" },
-    { id: "tr15", cat: "travel", es: "perderse", en: "to get lost" },
-    { id: "tr16", cat: "travel", es: "explorar", en: "to explore" },
-    { id: "tr17", cat: "travel", es: "extranjero", en: "foreign" },
-    { id: "tr18", cat: "travel", es: "lejano", en: "distant" },
-    { id: "tr19", cat: "travel", es: "barato", en: "cheap" },
-    { id: "tr20", cat: "travel", es: "la aduana", en: "customs" },
-
-    // Topic: Animals
-    { id: "an1", cat: "animals", es: "el caballo", en: "horse" },
-    { id: "an2", cat: "animals", es: "la vaca", en: "cow" },
-    { id: "an3", cat: "animals", es: "el pájaro", en: "bird" },
-    { id: "an4", cat: "animals", es: "el pez", en: "fish (animal)" },
-    { id: "an5", cat: "animals", es: "el león", en: "lion" },
-    { id: "an6", cat: "animals", es: "el elefante", en: "elephant" },
-    { id: "an7", cat: "animals", es: "el oso", en: "bear" },
-    { id: "an8", cat: "animals", es: "el ratón", en: "mouse" },
-    { id: "an9", cat: "animals", es: "la serpiente", en: "snake" },
-    { id: "an10", cat: "animals", es: "la araña", en: "spider" },
-    { id: "an11", cat: "animals", es: "la abeja", en: "bee" },
-    { id: "an12", cat: "animals", es: "el conejo", en: "rabbit" },
-    { id: "an13", cat: "animals", es: "la oveja", en: "sheep" },
-    { id: "an14", cat: "animals", es: "el mono", en: "monkey" },
-    { id: "an15", cat: "animals", es: "el tigre", en: "tiger" },
-    { id: "an16", cat: "animals", es: "el lobo", en: "wolf" },
-    { id: "an17", cat: "animals", es: "la mariposa", en: "butterfly" },
-    { id: "an18", cat: "animals", es: "nadar", en: "to swim" },
-    { id: "an19", cat: "animals", es: "ladrar", en: "to bark" },
-    { id: "an20", cat: "animals", es: "salvaje", en: "wild" },
-
-    // Topic: Family
-    { id: "fa1", cat: "family", es: "la madre", en: "mother" },
-    { id: "fa2", cat: "family", es: "el padre", en: "father" },
-    { id: "fa3", cat: "family", es: "el hermano", en: "brother" },
-    { id: "fa4", cat: "family", es: "la hermana", en: "sister" },
-    { id: "fa5", cat: "family", es: "el hijo", en: "son" },
-    { id: "fa6", cat: "family", es: "la hija", en: "daughter" },
-    { id: "fa7", cat: "family", es: "el abuelo", en: "grandfather" },
-    { id: "fa8", cat: "family", es: "la abuela", en: "grandmother" },
-    { id: "fa9", cat: "family", es: "el tío", en: "uncle" },
-    { id: "fa10", cat: "family", es: "la tía", en: "aunt" },
-    { id: "fa11", cat: "family", es: "el primo", en: "cousin (m)" },
-    { id: "fa12", cat: "family", es: "la prima", en: "cousin (f)" },
-    { id: "fa13", cat: "family", es: "el esposo", en: "husband" },
-    { id: "fa14", cat: "family", es: "la esposa", en: "wife" },
-    { id: "fa15", cat: "family", es: "el bebé", en: "baby" },
-    { id: "fa16", cat: "family", es: "los padres", en: "parents" },
-    { id: "fa17", cat: "family", es: "el nieto", en: "grandson" },
-    { id: "fa18", cat: "family", es: "la nieta", en: "granddaughter" },
-    { id: "fa19", cat: "family", es: "querer", en: "to love / want" },
-    { id: "fa20", cat: "family", es: "abrazar", en: "to hug" },
-
-    // Topic: Weather
-    { id: "we1", cat: "weather", es: "la lluvia", en: "rain" },
-    { id: "we2", cat: "weather", es: "la nieve", en: "snow" },
-    { id: "we3", cat: "weather", es: "el viento", en: "wind" },
-    { id: "we4", cat: "weather", es: "la nube", en: "cloud" },
-    { id: "we5", cat: "weather", es: "la tormenta", en: "storm" },
-    { id: "we6", cat: "weather", es: "el trueno", en: "thunder" },
-    { id: "we7", cat: "weather", es: "el rayo", en: "lightning" },
-    { id: "we8", cat: "weather", es: "el hielo", en: "ice" },
-    { id: "we9", cat: "weather", es: "la niebla", en: "fog" },
-    { id: "we10", cat: "weather", es: "el arcoíris", en: "rainbow" },
-    { id: "we11", cat: "weather", es: "llover", en: "to rain" },
-    { id: "we12", cat: "weather", es: "nevar", en: "to snow" },
-    { id: "we13", cat: "weather", es: "soleado", en: "sunny" },
-    { id: "we14", cat: "weather", es: "nublado", en: "cloudy" },
-    { id: "we15", cat: "weather", es: "húmedo", en: "humid" },
-    { id: "we16", cat: "weather", es: "seco", en: "dry" },
-    { id: "we17", cat: "weather", es: "templado", en: "mild" },
-    { id: "we18", cat: "weather", es: "la temperatura", en: "temperature" },
-    { id: "we19", cat: "weather", es: "el clima", en: "climate" },
-    { id: "we20", cat: "weather", es: "el pronóstico", en: "forecast" },
-
-    // Topic: Colors
-    { id: "co1", cat: "colors", es: "rojo", en: "red" },
-    { id: "co2", cat: "colors", es: "azul", en: "blue" },
-    { id: "co3", cat: "colors", es: "verde", en: "green" },
-    { id: "co4", cat: "colors", es: "amarillo", en: "yellow" },
-    { id: "co5", cat: "colors", es: "negro", en: "black" },
-    { id: "co6", cat: "colors", es: "blanco", en: "white" },
-    { id: "co7", cat: "colors", es: "gris", en: "gray" },
-    { id: "co8", cat: "colors", es: "marrón", en: "brown" },
-    { id: "co9", cat: "colors", es: "rosa", en: "pink" },
-    { id: "co10", cat: "colors", es: "morado", en: "purple" },
-    { id: "co11", cat: "colors", es: "naranja", en: "orange (color)" },
-    { id: "co12", cat: "colors", es: "dorado", en: "golden" },
-    { id: "co13", cat: "colors", es: "plateado", en: "silver" },
-    { id: "co14", cat: "colors", es: "claro", en: "light-colored" },
-    { id: "co15", cat: "colors", es: "oscuro", en: "dark" },
-    { id: "co16", cat: "colors", es: "colorido", en: "colorful" },
-    { id: "co17", cat: "colors", es: "pintar", en: "to paint" },
-    { id: "co18", cat: "colors", es: "teñir", en: "to dye" },
-    { id: "co19", cat: "colors", es: "brillante", en: "bright / shiny" },
-    { id: "co20", cat: "colors", es: "pálido", en: "pale" },
-
-    // Topic: Body
-    { id: "bo1", cat: "body", es: "la cabeza", en: "head" },
-    { id: "bo2", cat: "body", es: "el ojo", en: "eye" },
-    { id: "bo3", cat: "body", es: "la nariz", en: "nose" },
-    { id: "bo4", cat: "body", es: "la boca", en: "mouth" },
-    { id: "bo5", cat: "body", es: "la oreja", en: "ear" },
-    { id: "bo6", cat: "body", es: "el brazo", en: "arm" },
-    { id: "bo7", cat: "body", es: "la mano", en: "hand" },
-    { id: "bo8", cat: "body", es: "la pierna", en: "leg" },
-    { id: "bo9", cat: "body", es: "el pie", en: "foot" },
-    { id: "bo10", cat: "body", es: "el dedo", en: "finger" },
-    { id: "bo11", cat: "body", es: "el corazón", en: "heart" },
-    { id: "bo12", cat: "body", es: "la espalda", en: "back" },
-    { id: "bo13", cat: "body", es: "el cuello", en: "neck" },
-    { id: "bo14", cat: "body", es: "el pelo", en: "hair" },
-    { id: "bo15", cat: "body", es: "la piel", en: "skin" },
-    { id: "bo16", cat: "body", es: "doler", en: "to hurt" },
-    { id: "bo17", cat: "body", es: "respirar", en: "to breathe" },
-    { id: "bo18", cat: "body", es: "sano", en: "healthy" },
-    { id: "bo19", cat: "body", es: "herido", en: "injured" },
-    { id: "bo20", cat: "body", es: "cansado", en: "tired" },
-
-    // Topic: Clothing
-    { id: "cl1", cat: "clothing", es: "la camisa", en: "shirt" },
-    { id: "cl2", cat: "clothing", es: "el pantalón", en: "pants" },
-    { id: "cl3", cat: "clothing", es: "el vestido", en: "dress" },
-    { id: "cl4", cat: "clothing", es: "la falda", en: "skirt" },
-    { id: "cl5", cat: "clothing", es: "el zapato", en: "shoe" },
-    { id: "cl6", cat: "clothing", es: "la chaqueta", en: "jacket" },
-    { id: "cl7", cat: "clothing", es: "el sombrero", en: "hat" },
-    { id: "cl8", cat: "clothing", es: "el cinturón", en: "belt" },
-    { id: "cl9", cat: "clothing", es: "la bufanda", en: "scarf" },
-    { id: "cl10", cat: "clothing", es: "el guante", en: "glove" },
-    { id: "cl11", cat: "clothing", es: "el calcetín", en: "sock" },
-    { id: "cl12", cat: "clothing", es: "el abrigo", en: "coat" },
-    { id: "cl13", cat: "clothing", es: "la ropa interior", en: "underwear" },
-    { id: "cl14", cat: "clothing", es: "el traje", en: "suit" },
-    { id: "cl15", cat: "clothing", es: "ponerse", en: "to put on" },
-    { id: "cl16", cat: "clothing", es: "quitarse", en: "to take off" },
-    { id: "cl17", cat: "clothing", es: "vestirse", en: "to get dressed" },
-    { id: "cl18", cat: "clothing", es: "elegante", en: "elegant" },
-    { id: "cl19", cat: "clothing", es: "cómodo", en: "comfortable" },
-    { id: "cl20", cat: "clothing", es: "ajustado", en: "tight-fitting" },
-
-    // Topic: Home
-    { id: "ho1", cat: "home", es: "la cocina", en: "kitchen" },
-    { id: "ho2", cat: "home", es: "el baño", en: "bathroom" },
-    { id: "ho3", cat: "home", es: "el dormitorio", en: "bedroom" },
-    { id: "ho4", cat: "home", es: "la sala", en: "living room" },
-    { id: "ho5", cat: "home", es: "el jardín", en: "garden" },
-    { id: "ho6", cat: "home", es: "el techo", en: "roof" },
-    { id: "ho7", cat: "home", es: "la ventana", en: "window" },
-    { id: "ho8", cat: "home", es: "la pared", en: "wall" },
-    { id: "ho9", cat: "home", es: "el suelo", en: "floor" },
-    { id: "ho10", cat: "home", es: "la escalera", en: "stairs" },
-    { id: "ho11", cat: "home", es: "el armario", en: "closet" },
-    { id: "ho12", cat: "home", es: "la cama", en: "bed" },
-    { id: "ho13", cat: "home", es: "el sofá", en: "sofa" },
-    { id: "ho14", cat: "home", es: "la lámpara", en: "lamp" },
-    { id: "ho15", cat: "home", es: "el espejo", en: "mirror" },
-    { id: "ho16", cat: "home", es: "limpiar", en: "to clean" },
-    { id: "ho17", cat: "home", es: "decorar", en: "to decorate" },
-    { id: "ho18", cat: "home", es: "amueblado", en: "furnished" },
-    { id: "ho19", cat: "home", es: "acogedor", en: "cozy" },
-    { id: "ho20", cat: "home", es: "espacioso", en: "spacious" },
-
-    // Topic: Emotions
-    { id: "em1", cat: "emotions", es: "el amor", en: "love" },
-    { id: "em2", cat: "emotions", es: "el miedo", en: "fear" },
-    { id: "em3", cat: "emotions", es: "la alegría", en: "joy" },
-    { id: "em4", cat: "emotions", es: "la ira", en: "anger" },
-    { id: "em5", cat: "emotions", es: "la sorpresa", en: "surprise" },
-    { id: "em6", cat: "emotions", es: "los celos", en: "jealousy" },
-    { id: "em7", cat: "emotions", es: "la vergüenza", en: "shame / embarrassment" },
-    { id: "em8", cat: "emotions", es: "la esperanza", en: "hope" },
-    { id: "em9", cat: "emotions", es: "la calma", en: "calm" },
-    { id: "em10", cat: "emotions", es: "la ansiedad", en: "anxiety" },
-    { id: "em11", cat: "emotions", es: "amar", en: "to love" },
-    { id: "em12", cat: "emotions", es: "odiar", en: "to hate" },
-    { id: "em13", cat: "emotions", es: "reír", en: "to laugh" },
-    { id: "em14", cat: "emotions", es: "llorar", en: "to cry" },
-    { id: "em15", cat: "emotions", es: "sonreír", en: "to smile" },
-    { id: "em16", cat: "emotions", es: "preocuparse", en: "to worry" },
-    { id: "em17", cat: "emotions", es: "emocionado", en: "excited" },
-    { id: "em18", cat: "emotions", es: "nervioso", en: "nervous" },
-    { id: "em19", cat: "emotions", es: "orgulloso", en: "proud" },
-    { id: "em20", cat: "emotions", es: "celoso", en: "jealous" }
+    // ===== NOUNS (200) =====
+    { id: "n1", cat: "noun", es: "la casa", en: "house", ex: "Me gusta la casa." },
+    { id: "n2", cat: "noun", es: "el perro", en: "dog", ex: "El perro corre en el parque." },
+    { id: "n3", cat: "noun", es: "el gato", en: "cat", ex: "El gato duerme en el sofá." },
+    { id: "n4", cat: "noun", es: "el libro", en: "book", ex: "Leo el libro por la noche." },
+    { id: "n5", cat: "noun", es: "el agua", en: "water", ex: "Bebo el agua fría." },
+    { id: "n6", cat: "noun", es: "el amigo", en: "friend", ex: "Mi amigo vive cerca." },
+    { id: "n7", cat: "noun", es: "la comida", en: "food", ex: "La comida está deliciosa." },
+    { id: "n8", cat: "noun", es: "la ciudad", en: "city", ex: "La ciudad es muy grande." },
+    { id: "n9", cat: "noun", es: "la familia", en: "family", ex: "Mi familia es grande." },
+    { id: "n10", cat: "noun", es: "el tiempo", en: "time / weather", ex: "No tengo mucho tiempo." },
+    { id: "n11", cat: "noun", es: "el trabajo", en: "work", ex: "El trabajo es difícil." },
+    { id: "n12", cat: "noun", es: "el coche", en: "car", ex: "El coche es nuevo." },
+    { id: "n13", cat: "noun", es: "la puerta", en: "door", ex: "Cierra la puerta, por favor." },
+    { id: "n14", cat: "noun", es: "la mesa", en: "table", ex: "Pon el plato en la mesa." },
+    { id: "n15", cat: "noun", es: "la silla", en: "chair", ex: "Siéntate en la silla." },
+    { id: "n16", cat: "noun", es: "la escuela", en: "school", ex: "Voy a la escuela temprano." },
+    { id: "n17", cat: "noun", es: "el dinero", en: "money", ex: "No tengo mucho dinero." },
+    { id: "n18", cat: "noun", es: "la playa", en: "beach", ex: "La playa está cerca." },
+    { id: "n19", cat: "noun", es: "la música", en: "music", ex: "Me encanta la música." },
+    { id: "n20", cat: "noun", es: "el sol", en: "sun", ex: "El sol brilla hoy." },
+    { id: "nx1", cat: "noun", es: "el médico", en: "doctor", ex: "Me gusta el médico." },
+    { id: "nx2", cat: "noun", es: "la enfermera", en: "nurse", ex: "Me gusta la enfermera." },
+    { id: "nx3", cat: "noun", es: "el maestro", en: "teacher", ex: "Me gusta el maestro." },
+    { id: "nx4", cat: "noun", es: "el abogado", en: "lawyer", ex: "Me gusta el abogado." },
+    { id: "nx5", cat: "noun", es: "el ingeniero", en: "engineer", ex: "Me gusta el ingeniero." },
+    { id: "nx6", cat: "noun", es: "el policía", en: "police officer", ex: "Me gusta el policía." },
+    { id: "nx7", cat: "noun", es: "el bombero", en: "firefighter", ex: "Me gusta el bombero." },
+    { id: "nx8", cat: "noun", es: "el cocinero", en: "cook", ex: "Me gusta el cocinero." },
+    { id: "nx9", cat: "noun", es: "el camarero", en: "waiter", ex: "Me gusta el camarero." },
+    { id: "nx10", cat: "noun", es: "el piloto", en: "pilot", ex: "Me gusta el piloto." },
+    { id: "nx11", cat: "noun", es: "el conductor", en: "driver", ex: "Me gusta el conductor." },
+    { id: "nx12", cat: "noun", es: "el granjero", en: "farmer", ex: "Me gusta el granjero." },
+    { id: "nx13", cat: "noun", es: "el pintor", en: "painter", ex: "Me gusta el pintor." },
+    { id: "nx14", cat: "noun", es: "el escritor", en: "writer", ex: "Me gusta el escritor." },
+    { id: "nx15", cat: "noun", es: "el cantante", en: "singer", ex: "Me gusta el cantante." },
+    { id: "nx16", cat: "noun", es: "el actor", en: "actor", ex: "Me gusta el actor." },
+    { id: "nx17", cat: "noun", es: "la actriz", en: "actress", ex: "Me gusta la actriz." },
+    { id: "nx18", cat: "noun", es: "el músico", en: "musician", ex: "Me gusta el músico." },
+    { id: "nx19", cat: "noun", es: "el científico", en: "scientist", ex: "Me gusta el científico." },
+    { id: "nx20", cat: "noun", es: "el arquitecto", en: "architect", ex: "Me gusta el arquitecto." },
+    { id: "nx21", cat: "noun", es: "el dentista", en: "dentist", ex: "Me gusta el dentista." },
+    { id: "nx22", cat: "noun", es: "el peluquero", en: "hairdresser", ex: "Me gusta el peluquero." },
+    { id: "nx23", cat: "noun", es: "el electricista", en: "electrician", ex: "Me gusta el electricista." },
+    { id: "nx24", cat: "noun", es: "el carpintero", en: "carpenter", ex: "Me gusta el carpintero." },
+    { id: "nx25", cat: "noun", es: "el jardinero", en: "gardener", ex: "Me gusta el jardinero." },
+    { id: "nx26", cat: "noun", es: "el parque", en: "park", ex: "Me gusta el parque." },
+    { id: "nx27", cat: "noun", es: "el hospital", en: "hospital", ex: "Me gusta el hospital." },
+    { id: "nx28", cat: "noun", es: "la tienda", en: "store", ex: "Me gusta la tienda." },
+    { id: "nx29", cat: "noun", es: "el mercado", en: "market", ex: "Me gusta el mercado." },
+    { id: "nx30", cat: "noun", es: "la iglesia", en: "church", ex: "Me gusta la iglesia." },
+    { id: "nx31", cat: "noun", es: "el museo", en: "museum", ex: "Me gusta el museo." },
+    { id: "nx32", cat: "noun", es: "la biblioteca", en: "library", ex: "Me gusta la biblioteca." },
+    { id: "nx33", cat: "noun", es: "el restaurante", en: "restaurant", ex: "Me gusta el restaurante." },
+    { id: "nx34", cat: "noun", es: "el banco", en: "bank", ex: "Me gusta el banco." },
+    { id: "nx35", cat: "noun", es: "la oficina", en: "office", ex: "Me gusta la oficina." },
+    { id: "nx36", cat: "noun", es: "la estación", en: "station", ex: "Me gusta la estación." },
+    { id: "nx37", cat: "noun", es: "el pueblo", en: "town", ex: "Me gusta el pueblo." },
+    { id: "nx38", cat: "noun", es: "el campo", en: "countryside", ex: "Me gusta el campo." },
+    { id: "nx39", cat: "noun", es: "la montaña", en: "mountain", ex: "Me gusta la montaña." },
+    { id: "nx40", cat: "noun", es: "el río", en: "river", ex: "Me gusta el río." },
+    { id: "nx41", cat: "noun", es: "el mar", en: "sea", ex: "Me gusta el mar." },
+    { id: "nx42", cat: "noun", es: "el bosque", en: "forest", ex: "Me gusta el bosque." },
+    { id: "nx43", cat: "noun", es: "el desierto", en: "desert", ex: "Me gusta el desierto." },
+    { id: "nx44", cat: "noun", es: "la isla", en: "island", ex: "Me gusta la isla." },
+    { id: "nx45", cat: "noun", es: "el lago", en: "lake", ex: "Me gusta el lago." },
+    { id: "nx46", cat: "noun", es: "el árbol", en: "tree", ex: "Me gusta el árbol." },
+    { id: "nx47", cat: "noun", es: "la flor", en: "flower", ex: "Me gusta la flor." },
+    { id: "nx48", cat: "noun", es: "la hoja", en: "leaf", ex: "Me gusta la hoja." },
+    { id: "nx49", cat: "noun", es: "la piedra", en: "stone", ex: "Me gusta la piedra." },
+    { id: "nx50", cat: "noun", es: "la arena", en: "sand", ex: "Me gusta la arena." },
+    { id: "nx51", cat: "noun", es: "el cielo", en: "sky", ex: "Me gusta el cielo." },
+    { id: "nx52", cat: "noun", es: "la estrella", en: "star", ex: "Me gusta la estrella." },
+    { id: "nx53", cat: "noun", es: "la luna", en: "moon", ex: "Me gusta la luna." },
+    { id: "nx54", cat: "noun", es: "la tierra", en: "earth / land", ex: "Me gusta la tierra." },
+    { id: "nx55", cat: "noun", es: "el fuego", en: "fire", ex: "Me gusta el fuego." },
+    { id: "nx56", cat: "noun", es: "el humo", en: "smoke", ex: "Me gusta el humo." },
+    { id: "nx57", cat: "noun", es: "la hierba", en: "grass", ex: "Me gusta la hierba." },
+    { id: "nx58", cat: "noun", es: "la raíz", en: "root", ex: "Me gusta la raíz." },
+    { id: "nx59", cat: "noun", es: "la semilla", en: "seed", ex: "Me gusta la semilla." },
+    { id: "nx60", cat: "noun", es: "el valle", en: "valley", ex: "Me gusta el valle." },
+    { id: "nx61", cat: "noun", es: "la llave", en: "key", ex: "Me gusta la llave." },
+    { id: "nx62", cat: "noun", es: "el reloj", en: "clock / watch", ex: "Me gusta el reloj." },
+    { id: "nx63", cat: "noun", es: "el teléfono", en: "phone", ex: "Me gusta el teléfono." },
+    { id: "nx64", cat: "noun", es: "la computadora", en: "computer", ex: "Me gusta la computadora." },
+    { id: "nx65", cat: "noun", es: "el papel", en: "paper", ex: "Me gusta el papel." },
+    { id: "nx66", cat: "noun", es: "el lápiz", en: "pencil", ex: "Me gusta el lápiz." },
+    { id: "nx67", cat: "noun", es: "el bolígrafo", en: "pen", ex: "Me gusta el bolígrafo." },
+    { id: "nx68", cat: "noun", es: "la caja", en: "box", ex: "Me gusta la caja." },
+    { id: "nx69", cat: "noun", es: "la bolsa", en: "bag", ex: "Me gusta la bolsa." },
+    { id: "nx70", cat: "noun", es: "el paraguas", en: "umbrella", ex: "Me gusta el paraguas." },
+    { id: "nx71", cat: "noun", es: "la toalla", en: "towel", ex: "Me gusta la toalla." },
+    { id: "nx72", cat: "noun", es: "el jabón", en: "soap", ex: "Me gusta el jabón." },
+    { id: "nx73", cat: "noun", es: "el cepillo", en: "brush", ex: "Me gusta el cepillo." },
+    { id: "nx74", cat: "noun", es: "el peine", en: "comb", ex: "Me gusta el peine." },
+    { id: "nx75", cat: "noun", es: "la vela", en: "candle", ex: "Me gusta la vela." },
+    { id: "nx76", cat: "noun", es: "la botella", en: "bottle", ex: "Me gusta la botella." },
+    { id: "nx77", cat: "noun", es: "el vaso", en: "glass", ex: "Me gusta el vaso." },
+    { id: "nx78", cat: "noun", es: "el plato", en: "plate", ex: "Me gusta el plato." },
+    { id: "nx79", cat: "noun", es: "el tenedor", en: "fork", ex: "Me gusta el tenedor." },
+    { id: "nx80", cat: "noun", es: "el cuchillo", en: "knife", ex: "Me gusta el cuchillo." },
+    { id: "nx81", cat: "noun", es: "el ordenador", en: "computer", ex: "Me gusta el ordenador." },
+    { id: "nx82", cat: "noun", es: "la pantalla", en: "screen", ex: "Me gusta la pantalla." },
+    { id: "nx83", cat: "noun", es: "el internet", en: "internet", ex: "Me gusta el internet." },
+    { id: "nx84", cat: "noun", es: "la aplicación", en: "app", ex: "Me gusta la aplicación." },
+    { id: "nx85", cat: "noun", es: "la batería", en: "battery", ex: "Me gusta la batería." },
+    { id: "nx86", cat: "noun", es: "el cargador", en: "charger", ex: "Me gusta el cargador." },
+    { id: "nx87", cat: "noun", es: "la cámara", en: "camera", ex: "Me gusta la cámara." },
+    { id: "nx88", cat: "noun", es: "la impresora", en: "printer", ex: "Me gusta la impresora." },
+    { id: "nx89", cat: "noun", es: "el altavoz", en: "speaker", ex: "Me gusta el altavoz." },
+    { id: "nx90", cat: "noun", es: "el teclado", en: "keyboard", ex: "Me gusta el teclado." },
+    { id: "nx91", cat: "noun", es: "el año", en: "year", ex: "Me gusta el año." },
+    { id: "nx92", cat: "noun", es: "el mes", en: "month", ex: "Me gusta el mes." },
+    { id: "nx93", cat: "noun", es: "la semana", en: "week", ex: "Me gusta la semana." },
+    { id: "nx94", cat: "noun", es: "el día", en: "day", ex: "Me gusta el día." },
+    { id: "nx95", cat: "noun", es: "la hora", en: "hour", ex: "Me gusta la hora." },
+    { id: "nx96", cat: "noun", es: "el minuto", en: "minute", ex: "Me gusta el minuto." },
+    { id: "nx97", cat: "noun", es: "el segundo", en: "second", ex: "Me gusta el segundo." },
+    { id: "nx98", cat: "noun", es: "la mañana", en: "morning", ex: "Me gusta la mañana." },
+    { id: "nx99", cat: "noun", es: "la tarde", en: "afternoon", ex: "Me gusta la tarde." },
+    { id: "nx100", cat: "noun", es: "la noche", en: "night", ex: "Me gusta la noche." },
+    { id: "nx101", cat: "noun", es: "el autobús", en: "bus", ex: "Me gusta el autobús." },
+    { id: "nx102", cat: "noun", es: "el tren", en: "train", ex: "Me gusta el tren." },
+    { id: "nx103", cat: "noun", es: "la bicicleta", en: "bicycle", ex: "Me gusta la bicicleta." },
+    { id: "nx104", cat: "noun", es: "el barco", en: "boat", ex: "Me gusta el barco." },
+    { id: "nx105", cat: "noun", es: "la moto", en: "motorcycle", ex: "Me gusta la moto." },
+    { id: "nx106", cat: "noun", es: "el camión", en: "truck", ex: "Me gusta el camión." },
+    { id: "nx107", cat: "noun", es: "el taxi", en: "taxi", ex: "Me gusta el taxi." },
+    { id: "nx108", cat: "noun", es: "el metro", en: "subway", ex: "Me gusta el metro." },
+    { id: "nx109", cat: "noun", es: "la calle", en: "street", ex: "Me gusta la calle." },
+    { id: "nx110", cat: "noun", es: "la carretera", en: "highway", ex: "Me gusta la carretera." },
+    { id: "nx111", cat: "noun", es: "la universidad", en: "university", ex: "Me gusta la universidad." },
+    { id: "nx112", cat: "noun", es: "el examen", en: "exam", ex: "Me gusta el examen." },
+    { id: "nx113", cat: "noun", es: "la tarea", en: "homework", ex: "Me gusta la tarea." },
+    { id: "nx114", cat: "noun", es: "la clase", en: "class", ex: "Me gusta la clase." },
+    { id: "nx115", cat: "noun", es: "el profesor", en: "professor (m)", ex: "Me gusta el profesor." },
+    { id: "nx116", cat: "noun", es: "la profesora", en: "professor (f)", ex: "Me gusta la profesora." },
+    { id: "nx117", cat: "noun", es: "el estudiante", en: "student", ex: "Me gusta el estudiante." },
+    { id: "nx118", cat: "noun", es: "la nota", en: "grade", ex: "Me gusta la nota." },
+    { id: "nx119", cat: "noun", es: "el cuaderno", en: "notebook", ex: "Me gusta el cuaderno." },
+    { id: "nx120", cat: "noun", es: "la pizarra", en: "chalkboard", ex: "Me gusta la pizarra." },
+    { id: "nx121", cat: "noun", es: "la vida", en: "life", ex: "Me gusta la vida." },
+    { id: "nx122", cat: "noun", es: "la muerte", en: "death", ex: "Me gusta la muerte." },
+    { id: "nx123", cat: "noun", es: "la verdad", en: "truth", ex: "Me gusta la verdad." },
+    { id: "nx124", cat: "noun", es: "la mentira", en: "lie", ex: "Me gusta la mentira." },
+    { id: "nx125", cat: "noun", es: "la libertad", en: "freedom", ex: "Me gusta la libertad." },
+    { id: "nx126", cat: "noun", es: "la paz", en: "peace", ex: "Me gusta la paz." },
+    { id: "nx127", cat: "noun", es: "la guerra", en: "war", ex: "Me gusta la guerra." },
+    { id: "nx128", cat: "noun", es: "la justicia", en: "justice", ex: "Me gusta la justicia." },
+    { id: "nx129", cat: "noun", es: "la idea", en: "idea", ex: "Me gusta la idea." },
+    { id: "nx130", cat: "noun", es: "el sueño", en: "dream", ex: "Me gusta el sueño." },
+    { id: "nx131", cat: "noun", es: "la suerte", en: "luck", ex: "Me gusta la suerte." },
+    { id: "nx132", cat: "noun", es: "el problema", en: "problem", ex: "Me gusta el problema." },
+    { id: "nx133", cat: "noun", es: "la solución", en: "solution", ex: "Me gusta la solución." },
+    { id: "nx134", cat: "noun", es: "el error", en: "mistake", ex: "Me gusta el error." },
+    { id: "nx135", cat: "noun", es: "la razón", en: "reason", ex: "Me gusta la razón." },
+    { id: "nx136", cat: "noun", es: "el fútbol", en: "soccer", ex: "Me gusta el fútbol." },
+    { id: "nx137", cat: "noun", es: "el baloncesto", en: "basketball", ex: "Me gusta el baloncesto." },
+    { id: "nx138", cat: "noun", es: "la pelota", en: "ball", ex: "Me gusta la pelota." },
+    { id: "nx139", cat: "noun", es: "el equipo", en: "team", ex: "Me gusta el equipo." },
+    { id: "nx140", cat: "noun", es: "el partido", en: "match", ex: "Me gusta el partido." },
+    { id: "nx141", cat: "noun", es: "la carrera", en: "race", ex: "Me gusta la carrera." },
+    { id: "nx142", cat: "noun", es: "la victoria", en: "victory", ex: "Me gusta la victoria." },
+    { id: "nx143", cat: "noun", es: "la derrota", en: "defeat", ex: "Me gusta la derrota." },
+    { id: "nx144", cat: "noun", es: "el arte", en: "art", ex: "Me gusta el arte." },
+    { id: "nx145", cat: "noun", es: "la pintura", en: "painting", ex: "Me gusta la pintura." },
+    { id: "nx146", cat: "noun", es: "la escultura", en: "sculpture", ex: "Me gusta la escultura." },
+    { id: "nx147", cat: "noun", es: "la danza", en: "dance", ex: "Me gusta la danza." },
+    { id: "nx148", cat: "noun", es: "el teatro", en: "theater", ex: "Me gusta el teatro." },
+    { id: "nx149", cat: "noun", es: "la película", en: "movie", ex: "Me gusta la película." },
+    { id: "nx150", cat: "noun", es: "la fotografía", en: "photography", ex: "Me gusta la fotografía." },
+    { id: "nx151", cat: "noun", es: "el país", en: "country", ex: "Me gusta el país." },
+    { id: "nx152", cat: "noun", es: "el continente", en: "continent", ex: "Me gusta el continente." },
+    { id: "nx153", cat: "noun", es: "el planeta", en: "planet", ex: "Me gusta el planeta." },
+    { id: "nx154", cat: "noun", es: "el universo", en: "universe", ex: "Me gusta el universo." },
+    { id: "nx155", cat: "noun", es: "el mundo", en: "world", ex: "Me gusta el mundo." },
+    { id: "nx156", cat: "noun", es: "la capital", en: "capital city", ex: "Me gusta la capital." },
+    { id: "nx157", cat: "noun", es: "el gobierno", en: "government", ex: "Me gusta el gobierno." },
+    { id: "nx158", cat: "noun", es: "el presidente", en: "president", ex: "Me gusta el presidente." },
+    { id: "nx159", cat: "noun", es: "el rey", en: "king", ex: "Me gusta el rey." },
+    { id: "nx160", cat: "noun", es: "la reina", en: "queen", ex: "Me gusta la reina." },
+    { id: "nx161", cat: "noun", es: "el príncipe", en: "prince", ex: "Me gusta el príncipe." },
+    { id: "nx162", cat: "noun", es: "la princesa", en: "princess", ex: "Me gusta la princesa." },
+    { id: "nx163", cat: "noun", es: "el soldado", en: "soldier", ex: "Me gusta el soldado." },
+    { id: "nx164", cat: "noun", es: "el ejército", en: "army", ex: "Me gusta el ejército." },
+    { id: "nx165", cat: "noun", es: "la bandera", en: "flag", ex: "Me gusta la bandera." },
+    { id: "nx166", cat: "noun", es: "el idioma", en: "language", ex: "Me gusta el idioma." },
+    { id: "nx167", cat: "noun", es: "la palabra", en: "word", ex: "Me gusta la palabra." },
+    { id: "nx168", cat: "noun", es: "la frase", en: "sentence", ex: "Me gusta la frase." },
+    { id: "nx169", cat: "noun", es: "la pregunta", en: "question", ex: "Me gusta la pregunta." },
+    { id: "nx170", cat: "noun", es: "la respuesta", en: "answer", ex: "Me gusta la respuesta." },
+    { id: "nx171", cat: "noun", es: "el secreto", en: "secret", ex: "Me gusta el secreto." },
+    { id: "nx172", cat: "noun", es: "el regalo", en: "gift", ex: "Me gusta el regalo." },
+    { id: "nx173", cat: "noun", es: "la fiesta", en: "party", ex: "Me gusta la fiesta." },
+    { id: "nx174", cat: "noun", es: "la boda", en: "wedding", ex: "Me gusta la boda." },
+    { id: "nx175", cat: "noun", es: "el cumpleaños", en: "birthday", ex: "Me gusta el cumpleaños." },
+    { id: "nx176", cat: "noun", es: "el sistema", en: "system", ex: "Me gusta el sistema." },
+    { id: "nx177", cat: "noun", es: "el proceso", en: "process", ex: "Me gusta el proceso." },
+    { id: "nx178", cat: "noun", es: "el resultado", en: "result", ex: "Me gusta el resultado." },
+    { id: "nx179", cat: "noun", es: "el objetivo", en: "goal", ex: "Me gusta el objetivo." },
+    { id: "nx180", cat: "noun", es: "el desafío", en: "challenge", ex: "Me gusta el desafío." },
+    // ===== ADJECTIVES (200) =====
+    { id: "a1", cat: "adjective", es: "grande", en: "big", ex: "Esto es muy grande." },
+    { id: "a2", cat: "adjective", es: "pequeño", en: "small", ex: "Esto es muy pequeño." },
+    { id: "a3", cat: "adjective", es: "feliz", en: "happy", ex: "Estoy muy feliz." },
+    { id: "a4", cat: "adjective", es: "triste", en: "sad", ex: "Estoy muy triste." },
+    { id: "a5", cat: "adjective", es: "bonito", en: "pretty", ex: "Esto es muy bonito." },
+    { id: "a6", cat: "adjective", es: "rápido", en: "fast", ex: "El coche es muy rápido." },
+    { id: "a7", cat: "adjective", es: "lento", en: "slow", ex: "El tren es muy lento." },
+    { id: "a8", cat: "adjective", es: "caliente", en: "hot", ex: "El café está muy caliente." },
+    { id: "a9", cat: "adjective", es: "frío", en: "cold", ex: "El agua está muy fría." },
+    { id: "a10", cat: "adjective", es: "nuevo", en: "new", ex: "Mi teléfono es nuevo." },
+    { id: "a11", cat: "adjective", es: "viejo", en: "old", ex: "Este libro es viejo." },
+    { id: "a12", cat: "adjective", es: "fácil", en: "easy", ex: "El examen es fácil." },
+    { id: "a13", cat: "adjective", es: "difícil", en: "difficult", ex: "El examen es difícil." },
+    { id: "a14", cat: "adjective", es: "alto", en: "tall", ex: "Mi hermano es alto." },
+    { id: "a15", cat: "adjective", es: "bajo", en: "short", ex: "La mesa es baja." },
+    { id: "a16", cat: "adjective", es: "fuerte", en: "strong", ex: "Mi padre es fuerte." },
+    { id: "a17", cat: "adjective", es: "débil", en: "weak", ex: "Me siento débil hoy." },
+    { id: "a18", cat: "adjective", es: "limpio", en: "clean", ex: "La cocina está limpia." },
+    { id: "a19", cat: "adjective", es: "sucio", en: "dirty", ex: "La ropa está sucia." },
+    { id: "a20", cat: "adjective", es: "inteligente", en: "smart", ex: "Mi hermana es inteligente." },
+    { id: "ax1", cat: "adjective", es: "amable", en: "kind", ex: "Esto es muy amable." },
+    { id: "ax2", cat: "adjective", es: "simpático", en: "nice", ex: "Esto es muy simpático." },
+    { id: "ax3", cat: "adjective", es: "antipático", en: "unpleasant", ex: "Esto es muy antipático." },
+    { id: "ax4", cat: "adjective", es: "generoso", en: "generous", ex: "Esto es muy generoso." },
+    { id: "ax5", cat: "adjective", es: "tacaño", en: "stingy", ex: "Esto es muy tacaño." },
+    { id: "ax6", cat: "adjective", es: "honesto", en: "honest", ex: "Esto es muy honesto." },
+    { id: "ax7", cat: "adjective", es: "sincero", en: "sincere", ex: "Esto es muy sincero." },
+    { id: "ax8", cat: "adjective", es: "tímido", en: "shy", ex: "Esto es muy tímido." },
+    { id: "ax9", cat: "adjective", es: "valiente", en: "brave", ex: "Esto es muy valiente." },
+    { id: "ax10", cat: "adjective", es: "cobarde", en: "cowardly", ex: "Esto es muy cobarde." },
+    { id: "ax11", cat: "adjective", es: "paciente", en: "patient", ex: "Esto es muy paciente." },
+    { id: "ax12", cat: "adjective", es: "impaciente", en: "impatient", ex: "Esto es muy impaciente." },
+    { id: "ax13", cat: "adjective", es: "curioso", en: "curious", ex: "Esto es muy curioso." },
+    { id: "ax14", cat: "adjective", es: "perezoso", en: "lazy", ex: "Esto es muy perezoso." },
+    { id: "ax15", cat: "adjective", es: "trabajador", en: "hardworking", ex: "Esto es muy trabajador." },
+    { id: "ax16", cat: "adjective", es: "responsable", en: "responsible", ex: "Esto es muy responsable." },
+    { id: "ax17", cat: "adjective", es: "maduro", en: "mature", ex: "Esto es muy maduro." },
+    { id: "ax18", cat: "adjective", es: "infantil", en: "childish", ex: "Esto es muy infantil." },
+    { id: "ax19", cat: "adjective", es: "arrogante", en: "arrogant", ex: "Esto es muy arrogante." },
+    { id: "ax20", cat: "adjective", es: "humilde", en: "humble", ex: "Esto es muy humilde." },
+    { id: "ax21", cat: "adjective", es: "optimista", en: "optimistic", ex: "Esto es muy optimista." },
+    { id: "ax22", cat: "adjective", es: "pesimista", en: "pessimistic", ex: "Esto es muy pesimista." },
+    { id: "ax23", cat: "adjective", es: "leal", en: "loyal", ex: "Esto es muy leal." },
+    { id: "ax24", cat: "adjective", es: "gracioso", en: "funny", ex: "Esto es muy gracioso." },
+    { id: "ax25", cat: "adjective", es: "serio", en: "serious", ex: "Esto es muy serio." },
+    { id: "ax26", cat: "adjective", es: "aburrido", en: "boring", ex: "Esto es muy aburrido." },
+    { id: "ax27", cat: "adjective", es: "divertido", en: "fun", ex: "Esto es muy divertido." },
+    { id: "ax28", cat: "adjective", es: "creativo", en: "creative", ex: "Esto es muy creativo." },
+    { id: "ax29", cat: "adjective", es: "ambicioso", en: "ambitious", ex: "Esto es muy ambicioso." },
+    { id: "ax30", cat: "adjective", es: "educado", en: "polite", ex: "Esto es muy educado." },
+    { id: "ax31", cat: "adjective", es: "delgado", en: "thin", ex: "Esto es muy delgado." },
+    { id: "ax32", cat: "adjective", es: "gordo", en: "fat", ex: "Esto es muy gordo." },
+    { id: "ax33", cat: "adjective", es: "guapo", en: "handsome", ex: "Esto es muy guapo." },
+    { id: "ax34", cat: "adjective", es: "feo", en: "ugly", ex: "Esto es muy feo." },
+    { id: "ax35", cat: "adjective", es: "joven", en: "young", ex: "Esto es muy joven." },
+    { id: "ax36", cat: "adjective", es: "anciano", en: "elderly", ex: "Esto es muy anciano." },
+    { id: "ax37", cat: "adjective", es: "musculoso", en: "muscular", ex: "Esto es muy musculoso." },
+    { id: "ax38", cat: "adjective", es: "calvo", en: "bald", ex: "Esto es muy calvo." },
+    { id: "ax39", cat: "adjective", es: "rubio", en: "blond", ex: "Esto es muy rubio." },
+    { id: "ax40", cat: "adjective", es: "moreno", en: "dark-haired", ex: "Esto es muy moreno." },
+    { id: "ax41", cat: "adjective", es: "pelirrojo", en: "redheaded", ex: "Esto es muy pelirrojo." },
+    { id: "ax42", cat: "adjective", es: "atractivo", en: "attractive", ex: "Esto es muy atractivo." },
+    { id: "ax43", cat: "adjective", es: "esbelto", en: "slender", ex: "Esto es muy esbelto." },
+    { id: "ax44", cat: "adjective", es: "robusto", en: "sturdy", ex: "Esto es muy robusto." },
+    { id: "ax45", cat: "adjective", es: "delicado", en: "delicate", ex: "Esto es muy delicado." },
+    { id: "ax46", cat: "adjective", es: "llamativo", en: "striking", ex: "Esto es muy llamativo." },
+    { id: "ax47", cat: "adjective", es: "bronceado", en: "tanned", ex: "Esto es muy bronceado." },
+    { id: "ax48", cat: "adjective", es: "arrugado", en: "wrinkled", ex: "Esto es muy arrugado." },
+    { id: "ax49", cat: "adjective", es: "peludo", en: "hairy", ex: "Esto es muy peludo." },
+    { id: "ax50", cat: "adjective", es: "descalzo", en: "barefoot", ex: "Esto es muy descalzo." },
+    { id: "ax51", cat: "adjective", es: "ancho", en: "wide", ex: "Esto es muy ancho." },
+    { id: "ax52", cat: "adjective", es: "estrecho", en: "narrow", ex: "Esto es muy estrecho." },
+    { id: "ax53", cat: "adjective", es: "profundo", en: "deep", ex: "Esto es muy profundo." },
+    { id: "ax54", cat: "adjective", es: "superficial", en: "shallow", ex: "Esto es muy superficial." },
+    { id: "ax55", cat: "adjective", es: "redondo", en: "round", ex: "Esto es muy redondo." },
+    { id: "ax56", cat: "adjective", es: "cuadrado", en: "square", ex: "Esto es muy cuadrado." },
+    { id: "ax57", cat: "adjective", es: "triangular", en: "triangular", ex: "Esto es muy triangular." },
+    { id: "ax58", cat: "adjective", es: "plano", en: "flat", ex: "Esto es muy plano." },
+    { id: "ax59", cat: "adjective", es: "curvo", en: "curved", ex: "Esto es muy curvo." },
+    { id: "ax60", cat: "adjective", es: "recto", en: "straight", ex: "Esto es muy recto." },
+    { id: "ax61", cat: "adjective", es: "grueso", en: "thick", ex: "Esto es muy grueso." },
+    { id: "ax62", cat: "adjective", es: "fino", en: "fine / thin", ex: "Esto es muy fino." },
+    { id: "ax63", cat: "adjective", es: "pesado", en: "heavy", ex: "Esto es muy pesado." },
+    { id: "ax64", cat: "adjective", es: "ligero", en: "light (weight)", ex: "Esto es muy ligero." },
+    { id: "ax65", cat: "adjective", es: "vacío", en: "empty", ex: "Esto es muy vacío." },
+    { id: "ax66", cat: "adjective", es: "lleno", en: "full", ex: "Esto es muy lleno." },
+    { id: "ax67", cat: "adjective", es: "amplio", en: "spacious", ex: "Esto es muy amplio." },
+    { id: "ax68", cat: "adjective", es: "reducido", en: "reduced", ex: "Esto es muy reducido." },
+    { id: "ax69", cat: "adjective", es: "infinito", en: "infinite", ex: "Esto es muy infinito." },
+    { id: "ax70", cat: "adjective", es: "limitado", en: "limited", ex: "Esto es muy limitado." },
+    { id: "ax71", cat: "adjective", es: "enojado", en: "angry", ex: "Esto es muy enojado." },
+    { id: "ax72", cat: "adjective", es: "asustado", en: "scared", ex: "Esto es muy asustado." },
+    { id: "ax73", cat: "adjective", es: "sorprendido", en: "surprised", ex: "Esto es muy sorprendido." },
+    { id: "ax74", cat: "adjective", es: "agotado", en: "exhausted", ex: "Esto es muy agotado." },
+    { id: "ax75", cat: "adjective", es: "relajado", en: "relaxed", ex: "Esto es muy relajado." },
+    { id: "ax76", cat: "adjective", es: "estresado", en: "stressed", ex: "Esto es muy estresado." },
+    { id: "ax77", cat: "adjective", es: "confundido", en: "confused", ex: "Esto es muy confundido." },
+    { id: "ax78", cat: "adjective", es: "seguro", en: "confident", ex: "Esto es muy seguro." },
+    { id: "ax79", cat: "adjective", es: "inseguro", en: "insecure", ex: "Esto es muy inseguro." },
+    { id: "ax80", cat: "adjective", es: "tranquilo", en: "calm", ex: "Esto es muy tranquilo." },
+    { id: "ax81", cat: "adjective", es: "inquieto", en: "restless", ex: "Esto es muy inquieto." },
+    { id: "ax82", cat: "adjective", es: "satisfecho", en: "satisfied", ex: "Esto es muy satisfecho." },
+    { id: "ax83", cat: "adjective", es: "decepcionado", en: "disappointed", ex: "Esto es muy decepcionado." },
+    { id: "ax84", cat: "adjective", es: "aliviado", en: "relieved", ex: "Esto es muy aliviado." },
+    { id: "ax85", cat: "adjective", es: "avergonzado", en: "embarrassed", ex: "Esto es muy avergonzado." },
+    { id: "ax86", cat: "adjective", es: "entusiasmado", en: "enthusiastic", ex: "Esto es muy entusiasmado." },
+    { id: "ax87", cat: "adjective", es: "motivado", en: "motivated", ex: "Esto es muy motivado." },
+    { id: "ax88", cat: "adjective", es: "desmotivado", en: "unmotivated", ex: "Esto es muy desmotivado." },
+    { id: "ax89", cat: "adjective", es: "agradecido", en: "grateful", ex: "Esto es muy agradecido." },
+    { id: "ax90", cat: "adjective", es: "culpable", en: "guilty", ex: "Esto es muy culpable." },
+    { id: "ax91", cat: "adjective", es: "suave", en: "soft", ex: "Esto es muy suave." },
+    { id: "ax92", cat: "adjective", es: "áspero", en: "rough", ex: "Esto es muy áspero." },
+    { id: "ax93", cat: "adjective", es: "liso", en: "smooth", ex: "Esto es muy liso." },
+    { id: "ax94", cat: "adjective", es: "pegajoso", en: "sticky", ex: "Esto es muy pegajoso." },
+    { id: "ax95", cat: "adjective", es: "resbaladizo", en: "slippery", ex: "Esto es muy resbaladizo." },
+    { id: "ax96", cat: "adjective", es: "metálico", en: "metallic", ex: "Esto es muy metálico." },
+    { id: "ax97", cat: "adjective", es: "transparente", en: "transparent", ex: "Esto es muy transparente." },
+    { id: "ax98", cat: "adjective", es: "opaco", en: "opaque", ex: "Esto es muy opaco." },
+    { id: "ax99", cat: "adjective", es: "mate", en: "matte", ex: "Esto es muy mate." },
+    { id: "ax100", cat: "adjective", es: "flexible", en: "flexible", ex: "Esto es muy flexible." },
+    { id: "ax101", cat: "adjective", es: "rígido", en: "rigid", ex: "Esto es muy rígido." },
+    { id: "ax102", cat: "adjective", es: "elástico", en: "elastic", ex: "Esto es muy elástico." },
+    { id: "ax103", cat: "adjective", es: "duro", en: "hard", ex: "Esto es muy duro." },
+    { id: "ax104", cat: "adjective", es: "blando", en: "soft / tender", ex: "Esto es muy blando." },
+    { id: "ax105", cat: "adjective", es: "sólido", en: "solid", ex: "Esto es muy sólido." },
+    { id: "ax106", cat: "adjective", es: "caro", en: "expensive", ex: "Esto es muy caro." },
+    { id: "ax107", cat: "adjective", es: "gratis", en: "free (no cost)", ex: "Esto es muy gratis." },
+    { id: "ax108", cat: "adjective", es: "valioso", en: "valuable", ex: "Esto es muy valioso." },
+    { id: "ax109", cat: "adjective", es: "inútil", en: "useless", ex: "Esto es muy inútil." },
+    { id: "ax110", cat: "adjective", es: "útil", en: "useful", ex: "Esto es muy útil." },
+    { id: "ax111", cat: "adjective", es: "necesario", en: "necessary", ex: "Esto es muy necesario." },
+    { id: "ax112", cat: "adjective", es: "innecesario", en: "unnecessary", ex: "Esto es muy innecesario." },
+    { id: "ax113", cat: "adjective", es: "importante", en: "important", ex: "Esto es muy importante." },
+    { id: "ax114", cat: "adjective", es: "urgente", en: "urgent", ex: "Esto es muy urgente." },
+    { id: "ax115", cat: "adjective", es: "posible", en: "possible", ex: "Esto es muy posible." },
+    { id: "ax116", cat: "adjective", es: "imposible", en: "impossible", ex: "Esto es muy imposible." },
+    { id: "ax117", cat: "adjective", es: "probable", en: "probable", ex: "Esto es muy probable." },
+    { id: "ax118", cat: "adjective", es: "improbable", en: "improbable", ex: "Esto es muy improbable." },
+    { id: "ax119", cat: "adjective", es: "correcto", en: "correct", ex: "Esto es muy correcto." },
+    { id: "ax120", cat: "adjective", es: "incorrecto", en: "incorrect", ex: "Esto es muy incorrecto." },
+    { id: "ax121", cat: "adjective", es: "perfecto", en: "perfect", ex: "Esto es muy perfecto." },
+    { id: "ax122", cat: "adjective", es: "imperfecto", en: "imperfect", ex: "Esto es muy imperfecto." },
+    { id: "ax123", cat: "adjective", es: "exacto", en: "exact", ex: "Esto es muy exacto." },
+    { id: "ax124", cat: "adjective", es: "aproximado", en: "approximate", ex: "Esto es muy aproximado." },
+    { id: "ax125", cat: "adjective", es: "evidente", en: "evident", ex: "Esto es muy evidente." },
+    { id: "ax126", cat: "adjective", es: "dulce", en: "sweet", ex: "Esto es muy dulce." },
+    { id: "ax127", cat: "adjective", es: "salado", en: "salty", ex: "Esto es muy salado." },
+    { id: "ax128", cat: "adjective", es: "amargo", en: "bitter", ex: "Esto es muy amargo." },
+    { id: "ax129", cat: "adjective", es: "ácido", en: "sour", ex: "Esto es muy ácido." },
+    { id: "ax130", cat: "adjective", es: "picante", en: "spicy", ex: "Esto es muy picante." },
+    { id: "ax131", cat: "adjective", es: "soso", en: "bland", ex: "Esto es muy soso." },
+    { id: "ax132", cat: "adjective", es: "sabroso", en: "tasty", ex: "Esto es muy sabroso." },
+    { id: "ax133", cat: "adjective", es: "asqueroso", en: "disgusting", ex: "Esto es muy asqueroso." },
+    { id: "ax134", cat: "adjective", es: "fragante", en: "fragrant", ex: "Esto es muy fragante." },
+    { id: "ax135", cat: "adjective", es: "apestoso", en: "smelly", ex: "Esto es muy apestoso." },
+    { id: "ax136", cat: "adjective", es: "ruidoso", en: "noisy", ex: "Esto es muy ruidoso." },
+    { id: "ax137", cat: "adjective", es: "silencioso", en: "silent", ex: "Esto es muy silencioso." },
+    { id: "ax138", cat: "adjective", es: "luminoso", en: "bright", ex: "Esto es muy luminoso." },
+    { id: "ax139", cat: "adjective", es: "borroso", en: "blurry", ex: "Esto es muy borroso." },
+    { id: "ax140", cat: "adjective", es: "nítido", en: "sharp / clear", ex: "Esto es muy nítido." },
+    { id: "ax141", cat: "adjective", es: "temprano", en: "early", ex: "Esto es muy temprano." },
+    { id: "ax142", cat: "adjective", es: "tardío", en: "late", ex: "Esto es muy tardío." },
+    { id: "ax143", cat: "adjective", es: "reciente", en: "recent", ex: "Esto es muy reciente." },
+    { id: "ax144", cat: "adjective", es: "antiguo", en: "ancient", ex: "Esto es muy antiguo." },
+    { id: "ax145", cat: "adjective", es: "moderno", en: "modern", ex: "Esto es muy moderno." },
+    { id: "ax146", cat: "adjective", es: "futuro", en: "future", ex: "Esto es muy futuro." },
+    { id: "ax147", cat: "adjective", es: "pasado", en: "past", ex: "Esto es muy pasado." },
+    { id: "ax148", cat: "adjective", es: "actual", en: "current", ex: "Esto es muy actual." },
+    { id: "ax149", cat: "adjective", es: "frecuente", en: "frequent", ex: "Esto es muy frecuente." },
+    { id: "ax150", cat: "adjective", es: "raro", en: "rare / strange", ex: "Esto es muy raro." },
+    { id: "ax151", cat: "adjective", es: "famoso", en: "famous", ex: "Esto es muy famoso." },
+    { id: "ax152", cat: "adjective", es: "desconocido", en: "unknown", ex: "Esto es muy desconocido." },
+    { id: "ax153", cat: "adjective", es: "popular", en: "popular", ex: "Esto es muy popular." },
+    { id: "ax154", cat: "adjective", es: "extraño", en: "strange", ex: "Esto es muy extraño." },
+    { id: "ax155", cat: "adjective", es: "normal", en: "normal", ex: "Esto es muy normal." },
+    { id: "ax156", cat: "adjective", es: "especial", en: "special", ex: "Esto es muy especial." },
+    { id: "ax157", cat: "adjective", es: "único", en: "unique", ex: "Esto es muy único." },
+    { id: "ax158", cat: "adjective", es: "típico", en: "typical", ex: "Esto es muy típico." },
+    { id: "ax159", cat: "adjective", es: "general", en: "general", ex: "Esto es muy general." },
+    { id: "ax160", cat: "adjective", es: "particular", en: "particular", ex: "Esto es muy particular." },
+    { id: "ax161", cat: "adjective", es: "capaz", en: "capable", ex: "Esto es muy capaz." },
+    { id: "ax162", cat: "adjective", es: "incapaz", en: "incapable", ex: "Esto es muy incapaz." },
+    { id: "ax163", cat: "adjective", es: "hábil", en: "skillful", ex: "Esto es muy hábil." },
+    { id: "ax164", cat: "adjective", es: "torpe", en: "clumsy", ex: "Esto es muy torpe." },
+    { id: "ax165", cat: "adjective", es: "experto", en: "expert", ex: "Esto es muy experto." },
+    { id: "ax166", cat: "adjective", es: "novato", en: "novice", ex: "Esto es muy novato." },
+    { id: "ax167", cat: "adjective", es: "competente", en: "competent", ex: "Esto es muy competente." },
+    { id: "ax168", cat: "adjective", es: "inexperto", en: "inexperienced", ex: "Esto es muy inexperto." },
+    { id: "ax169", cat: "adjective", es: "talentoso", en: "talented", ex: "Esto es muy talentoso." },
+    { id: "ax170", cat: "adjective", es: "genial", en: "great / brilliant", ex: "Esto es muy genial." },
+    { id: "ax171", cat: "adjective", es: "tormentoso", en: "stormy", ex: "Esto es muy tormentoso." },
+    { id: "ax172", cat: "adjective", es: "ventoso", en: "windy", ex: "Esto es muy ventoso." },
+    { id: "ax173", cat: "adjective", es: "lluvioso", en: "rainy", ex: "Esto es muy lluvioso." },
+    { id: "ax174", cat: "adjective", es: "nevado", en: "snowy", ex: "Esto es muy nevado." },
+    { id: "ax175", cat: "adjective", es: "despejado", en: "clear (sky)", ex: "Esto es muy despejado." },
+    { id: "ax176", cat: "adjective", es: "caluroso", en: "hot (climate)", ex: "Esto es muy caluroso." },
+    { id: "ax177", cat: "adjective", es: "gélido", en: "freezing", ex: "Esto es muy gélido." },
+    { id: "ax178", cat: "adjective", es: "tropical", en: "tropical", ex: "Esto es muy tropical." },
+    { id: "ax179", cat: "adjective", es: "árido", en: "arid", ex: "Esto es muy árido." },
+    { id: "ax180", cat: "adjective", es: "fresco", en: "cool / fresh", ex: "Esto es muy fresco." },
+    // ===== VERBS (200) =====
+    { id: "v1", cat: "verb", es: "hablar", en: "to speak", ex: "Quiero hablar contigo." },
+    { id: "v2", cat: "verb", es: "comer", en: "to eat", ex: "Quiero comer ahora." },
+    { id: "v3", cat: "verb", es: "beber", en: "to drink", ex: "Quiero beber agua." },
+    { id: "v4", cat: "verb", es: "correr", en: "to run", ex: "Quiero correr por la mañana." },
+    { id: "v5", cat: "verb", es: "dormir", en: "to sleep", ex: "Quiero dormir temprano." },
+    { id: "v6", cat: "verb", es: "leer", en: "to read", ex: "Quiero leer un libro." },
+    { id: "v7", cat: "verb", es: "escribir", en: "to write", ex: "Quiero escribir una carta." },
+    { id: "v8", cat: "verb", es: "vivir", en: "to live", ex: "Quiero vivir aquí." },
+    { id: "v9", cat: "verb", es: "trabajar", en: "to work", ex: "Quiero trabajar menos." },
+    { id: "v10", cat: "verb", es: "estudiar", en: "to study", ex: "Quiero estudiar español." },
+    { id: "v11", cat: "verb", es: "viajar", en: "to travel", ex: "Quiero viajar a España." },
+    { id: "v12", cat: "verb", es: "jugar", en: "to play", ex: "Quiero jugar fútbol." },
+    { id: "v13", cat: "verb", es: "cantar", en: "to sing", ex: "Quiero cantar esta canción." },
+    { id: "v14", cat: "verb", es: "bailar", en: "to dance", ex: "Quiero bailar contigo." },
+    { id: "v15", cat: "verb", es: "cocinar", en: "to cook", ex: "Quiero cocinar la cena." },
+    { id: "v16", cat: "verb", es: "escuchar", en: "to listen", ex: "Quiero escuchar música." },
+    { id: "v17", cat: "verb", es: "mirar", en: "to watch", ex: "Quiero mirar la película." },
+    { id: "v18", cat: "verb", es: "comprender", en: "to understand", ex: "Quiero comprender esto." },
+    { id: "v19", cat: "verb", es: "ayudar", en: "to help", ex: "Quiero ayudar a mi amigo." },
+    { id: "v20", cat: "verb", es: "pensar", en: "to think", ex: "Quiero pensar un momento." },
+    { id: "vx1", cat: "verb", es: "levantarse", en: "to get up", ex: "Quiero levantarse." },
+    { id: "vx2", cat: "verb", es: "despertarse", en: "to wake up", ex: "Quiero despertarse." },
+    { id: "vx3", cat: "verb", es: "ducharse", en: "to shower", ex: "Quiero ducharse." },
+    { id: "vx4", cat: "verb", es: "bañarse", en: "to bathe", ex: "Quiero bañarse." },
+    { id: "vx5", cat: "verb", es: "peinarse", en: "to comb one's hair", ex: "Quiero peinarse." },
+    { id: "vx6", cat: "verb", es: "afeitarse", en: "to shave", ex: "Quiero afeitarse." },
+    { id: "vx7", cat: "verb", es: "cepillarse", en: "to brush (teeth)", ex: "Quiero cepillarse." },
+    { id: "vx8", cat: "verb", es: "maquillarse", en: "to put on makeup", ex: "Quiero maquillarse." },
+    { id: "vx9", cat: "verb", es: "acostarse", en: "to go to bed", ex: "Quiero acostarse." },
+    { id: "vx10", cat: "verb", es: "descansar", en: "to rest", ex: "Quiero descansar." },
+    { id: "vx11", cat: "verb", es: "relajarse", en: "to relax", ex: "Quiero relajarse." },
+    { id: "vx12", cat: "verb", es: "despedirse", en: "to say goodbye", ex: "Quiero despedirse." },
+    { id: "vx13", cat: "verb", es: "saludar", en: "to greet", ex: "Quiero saludar." },
+    { id: "vx14", cat: "verb", es: "regresar", en: "to return", ex: "Quiero regresar." },
+    { id: "vx15", cat: "verb", es: "volver", en: "to come back", ex: "Quiero volver." },
+    { id: "vx16", cat: "verb", es: "quedarse", en: "to stay", ex: "Quiero quedarse." },
+    { id: "vx17", cat: "verb", es: "partir", en: "to depart", ex: "Quiero partir." },
+    { id: "vx18", cat: "verb", es: "entrar", en: "to enter", ex: "Quiero entrar." },
+    { id: "vx19", cat: "verb", es: "abrir", en: "to open", ex: "Quiero abrir." },
+    { id: "vx20", cat: "verb", es: "cerrar", en: "to close", ex: "Quiero cerrar." },
+    { id: "vx21", cat: "verb", es: "decir", en: "to say", ex: "Quiero decir." },
+    { id: "vx22", cat: "verb", es: "preguntar", en: "to ask", ex: "Quiero preguntar." },
+    { id: "vx23", cat: "verb", es: "responder", en: "to answer", ex: "Quiero responder." },
+    { id: "vx24", cat: "verb", es: "contar", en: "to tell / count", ex: "Quiero contar." },
+    { id: "vx25", cat: "verb", es: "explicar", en: "to explain", ex: "Quiero explicar." },
+    { id: "vx26", cat: "verb", es: "discutir", en: "to discuss / argue", ex: "Quiero discutir." },
+    { id: "vx27", cat: "verb", es: "gritar", en: "to shout", ex: "Quiero gritar." },
+    { id: "vx28", cat: "verb", es: "susurrar", en: "to whisper", ex: "Quiero susurrar." },
+    { id: "vx29", cat: "verb", es: "llamar", en: "to call", ex: "Quiero llamar." },
+    { id: "vx30", cat: "verb", es: "contestar", en: "to reply", ex: "Quiero contestar." },
+    { id: "vx31", cat: "verb", es: "mencionar", en: "to mention", ex: "Quiero mencionar." },
+    { id: "vx32", cat: "verb", es: "sugerir", en: "to suggest", ex: "Quiero sugerir." },
+    { id: "vx33", cat: "verb", es: "prometer", en: "to promise", ex: "Quiero prometer." },
+    { id: "vx34", cat: "verb", es: "mentir", en: "to lie", ex: "Quiero mentir." },
+    { id: "vx35", cat: "verb", es: "confesar", en: "to confess", ex: "Quiero confesar." },
+    { id: "vx36", cat: "verb", es: "caminar", en: "to walk", ex: "Quiero caminar." },
+    { id: "vx37", cat: "verb", es: "saltar", en: "to jump", ex: "Quiero saltar." },
+    { id: "vx38", cat: "verb", es: "subir", en: "to go up", ex: "Quiero subir." },
+    { id: "vx39", cat: "verb", es: "bajar", en: "to go down", ex: "Quiero bajar." },
+    { id: "vx40", cat: "verb", es: "empujar", en: "to push", ex: "Quiero empujar." },
+    { id: "vx41", cat: "verb", es: "tirar", en: "to pull / throw", ex: "Quiero tirar." },
+    { id: "vx42", cat: "verb", es: "lanzar", en: "to throw", ex: "Quiero lanzar." },
+    { id: "vx43", cat: "verb", es: "atrapar", en: "to catch", ex: "Quiero atrapar." },
+    { id: "vx44", cat: "verb", es: "girar", en: "to turn", ex: "Quiero girar." },
+    { id: "vx45", cat: "verb", es: "mover", en: "to move", ex: "Quiero mover." },
+    { id: "vx46", cat: "verb", es: "detener", en: "to stop", ex: "Quiero detener." },
+    { id: "vx47", cat: "verb", es: "parar", en: "to stop", ex: "Quiero parar." },
+    { id: "vx48", cat: "verb", es: "seguir", en: "to follow / continue", ex: "Quiero seguir." },
+    { id: "vx49", cat: "verb", es: "pasar", en: "to pass", ex: "Quiero pasar." },
+    { id: "vx50", cat: "verb", es: "cruzar", en: "to cross", ex: "Quiero cruzar." },
+    { id: "vx51", cat: "verb", es: "saber", en: "to know (a fact)", ex: "Quiero saber." },
+    { id: "vx52", cat: "verb", es: "conocer", en: "to know (a person / place)", ex: "Quiero conocer." },
+    { id: "vx53", cat: "verb", es: "recordar", en: "to remember", ex: "Quiero recordar." },
+    { id: "vx54", cat: "verb", es: "olvidar", en: "to forget", ex: "Quiero olvidar." },
+    { id: "vx55", cat: "verb", es: "aprender", en: "to learn", ex: "Quiero aprender." },
+    { id: "vx56", cat: "verb", es: "enseñar", en: "to teach", ex: "Quiero enseñar." },
+    { id: "vx57", cat: "verb", es: "decidir", en: "to decide", ex: "Quiero decidir." },
+    { id: "vx58", cat: "verb", es: "elegir", en: "to choose", ex: "Quiero elegir." },
+    { id: "vx59", cat: "verb", es: "imaginar", en: "to imagine", ex: "Quiero imaginar." },
+    { id: "vx60", cat: "verb", es: "soñar", en: "to dream", ex: "Quiero soñar." },
+    { id: "vx61", cat: "verb", es: "creer", en: "to believe", ex: "Quiero creer." },
+    { id: "vx62", cat: "verb", es: "dudar", en: "to doubt", ex: "Quiero dudar." },
+    { id: "vx63", cat: "verb", es: "notar", en: "to notice", ex: "Quiero notar." },
+    { id: "vx64", cat: "verb", es: "considerar", en: "to consider", ex: "Quiero considerar." },
+    { id: "vx65", cat: "verb", es: "planear", en: "to plan", ex: "Quiero planear." },
+    { id: "vx66", cat: "verb", es: "sentir", en: "to feel", ex: "Quiero sentir." },
+    { id: "vx67", cat: "verb", es: "gustar", en: "to like", ex: "Quiero gustar." },
+    { id: "vx68", cat: "verb", es: "encantar", en: "to love (something)", ex: "Quiero encantar." },
+    { id: "vx69", cat: "verb", es: "molestar", en: "to bother", ex: "Quiero molestar." },
+    { id: "vx70", cat: "verb", es: "enojarse", en: "to get angry", ex: "Quiero enojarse." },
+    { id: "vx71", cat: "verb", es: "sorprender", en: "to surprise", ex: "Quiero sorprender." },
+    { id: "vx72", cat: "verb", es: "asustar", en: "to scare", ex: "Quiero asustar." },
+    { id: "vx73", cat: "verb", es: "disfrutar", en: "to enjoy", ex: "Quiero disfrutar." },
+    { id: "vx74", cat: "verb", es: "divertirse", en: "to have fun", ex: "Quiero divertirse." },
+    { id: "vx75", cat: "verb", es: "aburrirse", en: "to get bored", ex: "Quiero aburrirse." },
+    { id: "vx76", cat: "verb", es: "extrañar", en: "to miss (someone)", ex: "Quiero extrañar." },
+    { id: "vx77", cat: "verb", es: "perdonar", en: "to forgive", ex: "Quiero perdonar." },
+    { id: "vx78", cat: "verb", es: "agradecer", en: "to thank", ex: "Quiero agradecer." },
+    { id: "vx79", cat: "verb", es: "felicitar", en: "to congratulate", ex: "Quiero felicitar." },
+    { id: "vx80", cat: "verb", es: "compartir", en: "to share", ex: "Quiero compartir." },
+    { id: "vx81", cat: "verb", es: "terminar", en: "to finish", ex: "Quiero terminar." },
+    { id: "vx82", cat: "verb", es: "empezar", en: "to start", ex: "Quiero empezar." },
+    { id: "vx83", cat: "verb", es: "comenzar", en: "to begin", ex: "Quiero comenzar." },
+    { id: "vx84", cat: "verb", es: "continuar", en: "to continue", ex: "Quiero continuar." },
+    { id: "vx85", cat: "verb", es: "organizar", en: "to organize", ex: "Quiero organizar." },
+    { id: "vx86", cat: "verb", es: "planificar", en: "to plan", ex: "Quiero planificar." },
+    { id: "vx87", cat: "verb", es: "resolver", en: "to solve", ex: "Quiero resolver." },
+    { id: "vx88", cat: "verb", es: "lograr", en: "to achieve", ex: "Quiero lograr." },
+    { id: "vx89", cat: "verb", es: "intentar", en: "to try", ex: "Quiero intentar." },
+    { id: "vx90", cat: "verb", es: "conseguir", en: "to get / achieve", ex: "Quiero conseguir." },
+    { id: "vx91", cat: "verb", es: "crear", en: "to create", ex: "Quiero crear." },
+    { id: "vx92", cat: "verb", es: "construir", en: "to build", ex: "Quiero construir." },
+    { id: "vx93", cat: "verb", es: "producir", en: "to produce", ex: "Quiero producir." },
+    { id: "vx94", cat: "verb", es: "fabricar", en: "to manufacture", ex: "Quiero fabricar." },
+    { id: "vx95", cat: "verb", es: "diseñar", en: "to design", ex: "Quiero diseñar." },
+    { id: "vx96", cat: "verb", es: "lavar", en: "to wash", ex: "Quiero lavar." },
+    { id: "vx97", cat: "verb", es: "secar", en: "to dry", ex: "Quiero secar." },
+    { id: "vx98", cat: "verb", es: "planchar", en: "to iron", ex: "Quiero planchar." },
+    { id: "vx99", cat: "verb", es: "barrer", en: "to sweep", ex: "Quiero barrer." },
+    { id: "vx100", cat: "verb", es: "fregar", en: "to scrub", ex: "Quiero fregar." },
+    { id: "vx101", cat: "verb", es: "ordenar", en: "to tidy up", ex: "Quiero ordenar." },
+    { id: "vx102", cat: "verb", es: "guardar", en: "to put away", ex: "Quiero guardar." },
+    { id: "vx103", cat: "verb", es: "colgar", en: "to hang", ex: "Quiero colgar." },
+    { id: "vx104", cat: "verb", es: "doblar", en: "to fold", ex: "Quiero doblar." },
+    { id: "vx105", cat: "verb", es: "regar", en: "to water (plants)", ex: "Quiero regar." },
+    { id: "vx106", cat: "verb", es: "cortar", en: "to cut", ex: "Quiero cortar." },
+    { id: "vx107", cat: "verb", es: "pelar", en: "to peel", ex: "Quiero pelar." },
+    { id: "vx108", cat: "verb", es: "mezclar", en: "to mix", ex: "Quiero mezclar." },
+    { id: "vx109", cat: "verb", es: "hervir", en: "to boil", ex: "Quiero hervir." },
+    { id: "vx110", cat: "verb", es: "freír", en: "to fry", ex: "Quiero freír." },
+    { id: "vx111", cat: "verb", es: "comprar", en: "to buy", ex: "Quiero comprar." },
+    { id: "vx112", cat: "verb", es: "vender", en: "to sell", ex: "Quiero vender." },
+    { id: "vx113", cat: "verb", es: "pagar", en: "to pay", ex: "Quiero pagar." },
+    { id: "vx114", cat: "verb", es: "gastar", en: "to spend", ex: "Quiero gastar." },
+    { id: "vx115", cat: "verb", es: "ahorrar", en: "to save (money)", ex: "Quiero ahorrar." },
+    { id: "vx116", cat: "verb", es: "costar", en: "to cost", ex: "Quiero costar." },
+    { id: "vx117", cat: "verb", es: "prestar", en: "to lend", ex: "Quiero prestar." },
+    { id: "vx118", cat: "verb", es: "deber", en: "to owe", ex: "Quiero deber." },
+    { id: "vx119", cat: "verb", es: "ganar", en: "to earn / win", ex: "Quiero ganar." },
+    { id: "vx120", cat: "verb", es: "perder", en: "to lose", ex: "Quiero perder." },
+    { id: "vx121", cat: "verb", es: "ver", en: "to see", ex: "Quiero ver." },
+    { id: "vx122", cat: "verb", es: "oír", en: "to hear", ex: "Quiero oír." },
+    { id: "vx123", cat: "verb", es: "tocar", en: "to touch", ex: "Quiero tocar." },
+    { id: "vx124", cat: "verb", es: "oler", en: "to smell", ex: "Quiero oler." },
+    { id: "vx125", cat: "verb", es: "probar", en: "to taste / try", ex: "Quiero probar." },
+    { id: "vx126", cat: "verb", es: "observar", en: "to observe", ex: "Quiero observar." },
+    { id: "vx127", cat: "verb", es: "percibir", en: "to perceive", ex: "Quiero percibir." },
+    { id: "vx128", cat: "verb", es: "distinguir", en: "to distinguish", ex: "Quiero distinguir." },
+    { id: "vx129", cat: "verb", es: "reconocer", en: "to recognize", ex: "Quiero reconocer." },
+    { id: "vx130", cat: "verb", es: "contemplar", en: "to contemplate", ex: "Quiero contemplar." },
+    { id: "vx131", cat: "verb", es: "crecer", en: "to grow", ex: "Quiero crecer." },
+    { id: "vx132", cat: "verb", es: "cambiar", en: "to change", ex: "Quiero cambiar." },
+    { id: "vx133", cat: "verb", es: "nacer", en: "to be born", ex: "Quiero nacer." },
+    { id: "vx134", cat: "verb", es: "morir", en: "to die", ex: "Quiero morir." },
+    { id: "vx135", cat: "verb", es: "aparecer", en: "to appear", ex: "Quiero aparecer." },
+    { id: "vx136", cat: "verb", es: "desaparecer", en: "to disappear", ex: "Quiero desaparecer." },
+    { id: "vx137", cat: "verb", es: "romper", en: "to break", ex: "Quiero romper." },
+    { id: "vx138", cat: "verb", es: "reparar", en: "to repair", ex: "Quiero reparar." },
+    { id: "vx139", cat: "verb", es: "destruir", en: "to destroy", ex: "Quiero destruir." },
+    { id: "vx140", cat: "verb", es: "transformar", en: "to transform", ex: "Quiero transformar." },
+    { id: "vx141", cat: "verb", es: "necesitar", en: "to need", ex: "Quiero necesitar." },
+    { id: "vx142", cat: "verb", es: "permitir", en: "to allow", ex: "Quiero permitir." },
+    { id: "vx143", cat: "verb", es: "prohibir", en: "to forbid", ex: "Quiero prohibir." },
+    { id: "vx144", cat: "verb", es: "evitar", en: "to avoid", ex: "Quiero evitar." },
+    { id: "vx145", cat: "verb", es: "aceptar", en: "to accept", ex: "Quiero aceptar." },
+    { id: "vx146", cat: "verb", es: "rechazar", en: "to reject", ex: "Quiero rechazar." },
+    { id: "vx147", cat: "verb", es: "invitar", en: "to invite", ex: "Quiero invitar." },
+    { id: "vx148", cat: "verb", es: "visitar", en: "to visit", ex: "Quiero visitar." },
+    { id: "vx149", cat: "verb", es: "esperar", en: "to wait / hope", ex: "Quiero esperar." },
+    { id: "vx150", cat: "verb", es: "depender", en: "to depend", ex: "Quiero depender." },
+    { id: "vx151", cat: "verb", es: "pertenecer", en: "to belong", ex: "Quiero pertenecer." },
+    { id: "vx152", cat: "verb", es: "existir", en: "to exist", ex: "Quiero existir." },
+    { id: "vx153", cat: "verb", es: "ocurrir", en: "to happen", ex: "Quiero ocurrir." },
+    { id: "vx154", cat: "verb", es: "suceder", en: "to happen", ex: "Quiero suceder." },
+    { id: "vx155", cat: "verb", es: "causar", en: "to cause", ex: "Quiero causar." },
+    { id: "vx156", cat: "verb", es: "afectar", en: "to affect", ex: "Quiero afectar." },
+    { id: "vx157", cat: "verb", es: "incluir", en: "to include", ex: "Quiero incluir." },
+    { id: "vx158", cat: "verb", es: "excluir", en: "to exclude", ex: "Quiero excluir." },
+    { id: "vx159", cat: "verb", es: "comparar", en: "to compare", ex: "Quiero comparar." },
+    { id: "vx160", cat: "verb", es: "poder", en: "to be able to", ex: "Quiero poder." },
+    { id: "vx161", cat: "verb", es: "mostrar", en: "to show", ex: "Quiero mostrar." },
+    { id: "vx162", cat: "verb", es: "indicar", en: "to indicate", ex: "Quiero indicar." },
+    { id: "vx163", cat: "verb", es: "señalar", en: "to point out", ex: "Quiero señalar." },
+    { id: "vx164", cat: "verb", es: "representar", en: "to represent", ex: "Quiero representar." },
+    { id: "vx165", cat: "verb", es: "significar", en: "to mean", ex: "Quiero significar." },
+    { id: "vx166", cat: "verb", es: "revisar", en: "to review", ex: "Quiero revisar." },
+    { id: "vx167", cat: "verb", es: "verificar", en: "to verify", ex: "Quiero verificar." },
+    { id: "vx168", cat: "verb", es: "confirmar", en: "to confirm", ex: "Quiero confirmar." },
+    { id: "vx169", cat: "verb", es: "cancelar", en: "to cancel", ex: "Quiero cancelar." },
+    { id: "vx170", cat: "verb", es: "actualizar", en: "to update", ex: "Quiero actualizar." },
+    { id: "vx171", cat: "verb", es: "instalar", en: "to install", ex: "Quiero instalar." },
+    { id: "vx172", cat: "verb", es: "descargar", en: "to download", ex: "Quiero descargar." },
+    { id: "vx173", cat: "verb", es: "publicar", en: "to publish", ex: "Quiero publicar." },
+    { id: "vx174", cat: "verb", es: "imprimir", en: "to print", ex: "Quiero imprimir." },
+    { id: "vx175", cat: "verb", es: "firmar", en: "to sign", ex: "Quiero firmar." },
+    { id: "vx176", cat: "verb", es: "renovar", en: "to renew", ex: "Quiero renovar." },
+    { id: "vx177", cat: "verb", es: "reemplazar", en: "to replace", ex: "Quiero reemplazar." },
+    { id: "vx178", cat: "verb", es: "completar", en: "to complete", ex: "Quiero completar." },
+    { id: "vx179", cat: "verb", es: "clasificar", en: "to classify", ex: "Quiero clasificar." },
+    { id: "vx180", cat: "verb", es: "identificar", en: "to identify", ex: "Quiero identificar." },
+    // ===== OTHER (200) =====
+    { id: "o1", cat: "other", es: "yo", en: "I", ex: "Yo hablo español." },
+    { id: "o2", cat: "other", es: "tú", en: "you", ex: "Tú eres mi amigo." },
+    { id: "o3", cat: "other", es: "él", en: "he", ex: "Él vive en Madrid." },
+    { id: "o4", cat: "other", es: "ella", en: "she", ex: "Ella estudia mucho." },
+    { id: "o5", cat: "other", es: "nosotros", en: "we", ex: "Nosotros vamos al cine." },
+    { id: "o6", cat: "other", es: "ellos", en: "they", ex: "Ellos juegan fútbol." },
+    { id: "o7", cat: "other", es: "uno", en: "one", ex: "Quiero uno, por favor." },
+    { id: "o8", cat: "other", es: "dos", en: "two", ex: "Tengo dos hermanos." },
+    { id: "o9", cat: "other", es: "tres", en: "three", ex: "Son las tres." },
+    { id: "o10", cat: "other", es: "diez", en: "ten", ex: "Cuento hasta diez." },
+    { id: "o11", cat: "other", es: "cien", en: "one hundred", ex: "Corrí cien metros." },
+    { id: "o12", cat: "other", es: "muy", en: "very", ex: "Estoy muy feliz." },
+    { id: "o13", cat: "other", es: "también", en: "also", ex: "Yo también quiero ir." },
+    { id: "o14", cat: "other", es: "siempre", en: "always", ex: "Siempre llego temprano." },
+    { id: "o15", cat: "other", es: "nunca", en: "never", ex: "Nunca como carne." },
+    { id: "o16", cat: "other", es: "ahora", en: "now", ex: "Ahora estoy ocupado." },
+    { id: "o17", cat: "other", es: "con", en: "with", ex: "Voy con mi amigo." },
+    { id: "o18", cat: "other", es: "sin", en: "without", ex: "Café sin azúcar, por favor." },
+    { id: "o19", cat: "other", es: "para", en: "for", ex: "Esto es para ti." },
+    { id: "o20", cat: "other", es: "y", en: "and", ex: "Pan y queso." },
+    { id: "ox1", cat: "other", es: "cuatro", en: "four", ex: "Tengo cuatro años." },
+    { id: "ox2", cat: "other", es: "cinco", en: "five", ex: "Tengo cinco dólares." },
+    { id: "ox3", cat: "other", es: "seis", en: "six", ex: "Son las seis." },
+    { id: "ox4", cat: "other", es: "siete", en: "seven", ex: "Trabajo siete horas." },
+    { id: "ox5", cat: "other", es: "ocho", en: "eight", ex: "Duermo ocho horas." },
+    { id: "ox6", cat: "other", es: "nueve", en: "nine", ex: "Llego a las nueve." },
+    { id: "ox7", cat: "other", es: "once", en: "eleven", ex: "La clase empieza a las once." },
+    { id: "ox8", cat: "other", es: "doce", en: "twelve", ex: "Como al mediodía, a las doce." },
+    { id: "ox9", cat: "other", es: "trece", en: "thirteen", ex: "Tengo trece años." },
+    { id: "ox10", cat: "other", es: "catorce", en: "fourteen", ex: "Hay catorce personas aquí." },
+    { id: "ox11", cat: "other", es: "quince", en: "fifteen", ex: "Faltan quince minutos." },
+    { id: "ox12", cat: "other", es: "veinte", en: "twenty", ex: "Corrí veinte kilómetros." },
+    { id: "ox13", cat: "other", es: "treinta", en: "thirty", ex: "Tengo treinta libros." },
+    { id: "ox14", cat: "other", es: "cuarenta", en: "forty", ex: "Mi madre tiene cuarenta años." },
+    { id: "ox15", cat: "other", es: "cincuenta", en: "fifty", ex: "Hay cincuenta estudiantes." },
+    { id: "ox16", cat: "other", es: "sesenta", en: "sixty", ex: "El límite es sesenta." },
+    { id: "ox17", cat: "other", es: "setenta", en: "seventy", ex: "Compré setenta manzanas." },
+    { id: "ox18", cat: "other", es: "ochenta", en: "eighty", ex: "Mi abuelo tiene ochenta años." },
+    { id: "ox19", cat: "other", es: "noventa", en: "ninety", ex: "El examen vale noventa puntos." },
+    { id: "ox20", cat: "other", es: "mil", en: "thousand", ex: "Ahorré mil euros." },
+    { id: "ox21", cat: "other", es: "primero", en: "first", ex: "Fue el primero." },
+    { id: "ox22", cat: "other", es: "segundo", en: "second", ex: "Llegó en segundo lugar." },
+    { id: "ox23", cat: "other", es: "tercero", en: "third", ex: "Vivo en el tercero piso." },
+    { id: "ox24", cat: "other", es: "cuarto", en: "fourth", ex: "Es la cuarta vez." },
+    { id: "ox25", cat: "other", es: "quinto", en: "fifth", ex: "Estoy en quinto grado." },
+    { id: "ox26", cat: "other", es: "sexto", en: "sixth", ex: "Es el sexto libro de la serie." },
+    { id: "ox27", cat: "other", es: "séptimo", en: "seventh", ex: "Hoy es nuestro séptimo aniversario." },
+    { id: "ox28", cat: "other", es: "octavo", en: "eighth", ex: "Llegó en octavo lugar." },
+    { id: "ox29", cat: "other", es: "noveno", en: "ninth", ex: "Vivo en el noveno piso." },
+    { id: "ox30", cat: "other", es: "décimo", en: "tenth", ex: "Es su décimo cumpleaños." },
+    { id: "ox31", cat: "other", es: "lunes", en: "Monday", ex: "Hoy es lunes." },
+    { id: "ox32", cat: "other", es: "martes", en: "Tuesday", ex: "Tengo clase el martes." },
+    { id: "ox33", cat: "other", es: "miércoles", en: "Wednesday", ex: "Nos vemos el miércoles." },
+    { id: "ox34", cat: "other", es: "jueves", en: "Thursday", ex: "El jueves voy al médico." },
+    { id: "ox35", cat: "other", es: "viernes", en: "Friday", ex: "Mañana es viernes." },
+    { id: "ox36", cat: "other", es: "sábado", en: "Saturday", ex: "El sábado descanso." },
+    { id: "ox37", cat: "other", es: "domingo", en: "Sunday", ex: "El domingo visito a mi familia." },
+    { id: "ox38", cat: "other", es: "enero", en: "January", ex: "Mi cumpleaños es en enero." },
+    { id: "ox39", cat: "other", es: "febrero", en: "February", ex: "Hace frío en febrero." },
+    { id: "ox40", cat: "other", es: "marzo", en: "March", ex: "La primavera empieza en marzo." },
+    { id: "ox41", cat: "other", es: "abril", en: "April", ex: "Llueve mucho en abril." },
+    { id: "ox42", cat: "other", es: "mayo", en: "May", ex: "Nos casamos en mayo." },
+    { id: "ox43", cat: "other", es: "junio", en: "June", ex: "Las clases terminan en junio." },
+    { id: "ox44", cat: "other", es: "julio", en: "July", ex: "Hace calor en julio." },
+    { id: "ox45", cat: "other", es: "agosto", en: "August", ex: "Viajamos en agosto." },
+    { id: "ox46", cat: "other", es: "septiembre", en: "September", ex: "Las clases empiezan en septiembre." },
+    { id: "ox47", cat: "other", es: "octubre", en: "October", ex: "Las hojas caen en octubre." },
+    { id: "ox48", cat: "other", es: "noviembre", en: "November", ex: "Hace viento en noviembre." },
+    { id: "ox49", cat: "other", es: "diciembre", en: "December", ex: "Celebramos en diciembre." },
+    { id: "ox50", cat: "other", es: "la primavera", en: "spring", ex: "Me gusta la primavera." },
+    { id: "ox51", cat: "other", es: "el verano", en: "summer", ex: "Me gusta el verano." },
+    { id: "ox52", cat: "other", es: "el otoño", en: "autumn", ex: "Me gusta el otoño." },
+    { id: "ox53", cat: "other", es: "el invierno", en: "winter", ex: "Me gusta el invierno." },
+    { id: "ox54", cat: "other", es: "me", en: "me (object)", ex: "La palabra «me» se usa como pronombre." },
+    { id: "ox55", cat: "other", es: "te", en: "you (object)", ex: "La palabra «te» se usa como pronombre." },
+    { id: "ox56", cat: "other", es: "lo", en: "him / it", ex: "La palabra «lo» se usa como pronombre." },
+    { id: "ox57", cat: "other", es: "la", en: "her / it", ex: "La palabra «la» se usa como pronombre." },
+    { id: "ox58", cat: "other", es: "nos", en: "us", ex: "La palabra «nos» se usa como pronombre." },
+    { id: "ox59", cat: "other", es: "les", en: "them / to them", ex: "La palabra «les» se usa como pronombre." },
+    { id: "ox60", cat: "other", es: "mí", en: "me (after preposition)", ex: "Este regalo es para mí." },
+    { id: "ox61", cat: "other", es: "ti", en: "you (after preposition)", ex: "Este regalo es para ti." },
+    { id: "ox62", cat: "other", es: "esto", en: "this (neutral)", ex: "¿Qué es esto?" },
+    { id: "ox63", cat: "other", es: "eso", en: "that (neutral)", ex: "No entiendo eso." },
+    { id: "ox64", cat: "other", es: "qué", en: "what", ex: "¿Qué es esto?" },
+    { id: "ox65", cat: "other", es: "quién", en: "who", ex: "¿Quién es esto?" },
+    { id: "ox66", cat: "other", es: "cuándo", en: "when", ex: "¿Cuándo llegas?" },
+    { id: "ox67", cat: "other", es: "dónde", en: "where", ex: "¿Dónde vives?" },
+    { id: "ox68", cat: "other", es: "cómo", en: "how", ex: "¿Cómo estás?" },
+    { id: "ox69", cat: "other", es: "cuál", en: "which", ex: "¿Cuál prefieres?" },
+    { id: "ox70", cat: "other", es: "cuánto", en: "how much", ex: "¿Cuánto cuesta?" },
+    { id: "ox71", cat: "other", es: "por qué", en: "why", ex: "¿Por qué lloras?" },
+    { id: "ox72", cat: "other", es: "adónde", en: "to where", ex: "¿Adónde vas?" },
+    { id: "ox73", cat: "other", es: "cuántos", en: "how many", ex: "¿Cuántos años tienes?" },
+    { id: "ox74", cat: "other", es: "en", en: "in / on", ex: "El libro está en la mesa." },
+    { id: "ox75", cat: "other", es: "de", en: "of / from", ex: "Vengo de la escuela." },
+    { id: "ox76", cat: "other", es: "a", en: "to", ex: "Voy a la escuela." },
+    { id: "ox77", cat: "other", es: "por", en: "for / by", ex: "Camino por el parque." },
+    { id: "ox78", cat: "other", es: "hacia", en: "toward", ex: "Camino hacia la puerta." },
+    { id: "ox79", cat: "other", es: "durante", en: "during", ex: "Trabajo durante el día." },
+    { id: "ox80", cat: "other", es: "desde", en: "since / from", ex: "Vivo aquí desde el año pasado." },
+    { id: "ox81", cat: "other", es: "hasta", en: "until", ex: "Espero hasta las tres." },
+    { id: "ox82", cat: "other", es: "sobre", en: "on / about", ex: "El libro está sobre la mesa." },
+    { id: "ox83", cat: "other", es: "bajo", en: "under", ex: "El gato está bajo la mesa." },
+    { id: "ox84", cat: "other", es: "o", en: "or", ex: "¿Quieres té o café?" },
+    { id: "ox85", cat: "other", es: "ni", en: "nor", ex: "No quiero ni té ni café." },
+    { id: "ox86", cat: "other", es: "aunque", en: "although", ex: "Voy, aunque llueve." },
+    { id: "ox87", cat: "other", es: "mientras", en: "while", ex: "Canto mientras trabajo." },
+    { id: "ox88", cat: "other", es: "cuando", en: "when", ex: "Llámame cuando llegues." },
+    { id: "ox89", cat: "other", es: "donde", en: "where", ex: "Vivo donde nací." },
+    { id: "ox90", cat: "other", es: "como", en: "as / like", ex: "Baila como un profesional." },
+    { id: "ox91", cat: "other", es: "que", en: "that", ex: "Sé que es verdad." },
+    { id: "ox92", cat: "other", es: "sino", en: "but rather", ex: "No es rojo, sino azul." },
+    { id: "ox93", cat: "other", es: "pero", en: "but", ex: "Quiero ir, pero no puedo." },
+    { id: "ox94", cat: "other", es: "aquí", en: "here", ex: "Vivo aquí." },
+    { id: "ox95", cat: "other", es: "allí", en: "there", ex: "El gato está allí." },
+    { id: "ox96", cat: "other", es: "acá", en: "here", ex: "Ven acá." },
+    { id: "ox97", cat: "other", es: "allá", en: "there", ex: "El sol se pone allá." },
+    { id: "ox98", cat: "other", es: "arriba", en: "above / up", ex: "Sube arriba." },
+    { id: "ox99", cat: "other", es: "abajo", en: "below / down", ex: "Baja abajo." },
+    { id: "ox100", cat: "other", es: "adelante", en: "forward", ex: "Sigue adelante." },
+    { id: "ox101", cat: "other", es: "atrás", en: "behind", ex: "Mira atrás." },
+    { id: "ox102", cat: "other", es: "cerca", en: "near", ex: "La tienda está cerca." },
+    { id: "ox103", cat: "other", es: "lejos", en: "far", ex: "La playa está lejos." },
+    { id: "ox104", cat: "other", es: "dentro", en: "inside", ex: "Espera dentro." },
+    { id: "ox105", cat: "other", es: "fuera", en: "outside", ex: "Juega fuera." },
+    { id: "ox106", cat: "other", es: "tarde", en: "late", ex: "Llegué tarde." },
+    { id: "ox107", cat: "other", es: "pronto", en: "soon", ex: "Nos vemos pronto." },
+    { id: "ox108", cat: "other", es: "despacio", en: "slowly", ex: "Habla despacio, por favor." },
+    { id: "ox109", cat: "other", es: "rápidamente", en: "quickly", ex: "Corre rápidamente." },
+    { id: "ox110", cat: "other", es: "bien", en: "well", ex: "Todo está bien." },
+    { id: "ox111", cat: "other", es: "mal", en: "badly", ex: "Me siento mal." },
+    { id: "ox112", cat: "other", es: "casi", en: "almost", ex: "Casi termino." },
+    { id: "ox113", cat: "other", es: "quizás", en: "maybe", ex: "Quizás llueva mañana." },
+    { id: "ox114", cat: "other", es: "este", en: "this (m)", ex: "Este libro es mío." },
+    { id: "ox115", cat: "other", es: "esta", en: "this (f)", ex: "Esta casa es bonita." },
+    { id: "ox116", cat: "other", es: "ese", en: "that (m)", ex: "Ese perro ladra." },
+    { id: "ox117", cat: "other", es: "esa", en: "that (f)", ex: "Esa flor es roja." },
+    { id: "ox118", cat: "other", es: "aquel", en: "that over there", ex: "Aquel día fue especial." },
+    { id: "ox119", cat: "other", es: "mi", en: "my", ex: "Mi familia es grande." },
+    { id: "ox120", cat: "other", es: "tu", en: "your", ex: "Tu idea es buena." },
+    { id: "ox121", cat: "other", es: "su", en: "his / her / their", ex: "Su casa es grande." },
+    { id: "ox122", cat: "other", es: "nuestro", en: "our", ex: "Nuestro equipo ganó." },
+    { id: "ox123", cat: "other", es: "vuestro", en: "your (pl.)", ex: "Vuestro coche es nuevo." },
+    { id: "ox124", cat: "other", es: "mañana", en: "tomorrow", ex: "Nos vemos mañana." },
+    { id: "ox125", cat: "other", es: "ayer", en: "yesterday", ex: "Ayer fui al mercado." },
+    { id: "ox126", cat: "other", es: "hoy", en: "today", ex: "Hoy es un buen día." },
+    { id: "ox127", cat: "other", es: "anoche", en: "last night", ex: "Anoche dormí bien." },
+    { id: "ox128", cat: "other", es: "anteayer", en: "day before yesterday", ex: "Anteayer llovió mucho." },
+    { id: "ox129", cat: "other", es: "entonces", en: "then", ex: "Entonces, ¿qué hacemos?" },
+    { id: "ox130", cat: "other", es: "luego", en: "then / later", ex: "Hablamos luego." },
+    { id: "ox131", cat: "other", es: "después", en: "after / later", ex: "Comemos después." },
+    { id: "ox132", cat: "other", es: "antes", en: "before", ex: "Llegué antes que tú." },
+    { id: "ox133", cat: "other", es: "ya", en: "already", ex: "Ya terminé la tarea." },
+    { id: "ox134", cat: "other", es: "todavía", en: "still / yet", ex: "Todavía trabajo aquí." },
+    { id: "ox135", cat: "other", es: "aún", en: "still / yet", ex: "Aún no ha llegado." },
+    { id: "ox136", cat: "other", es: "recientemente", en: "recently", ex: "Recientemente viajé a España." },
+    { id: "ox137", cat: "other", es: "finalmente", en: "finally", ex: "Finalmente terminamos el proyecto." },
+    { id: "ox138", cat: "other", es: "últimamente", en: "lately", ex: "Últimamente estoy cansado." },
+    { id: "ox139", cat: "other", es: "mucho", en: "a lot", ex: "Te quiero mucho." },
+    { id: "ox140", cat: "other", es: "poco", en: "little", ex: "Duermo poco." },
+    { id: "ox141", cat: "other", es: "demasiado", en: "too much", ex: "Comiste demasiado." },
+    { id: "ox142", cat: "other", es: "bastante", en: "quite / enough", ex: "Tengo bastante tiempo." },
+    { id: "ox143", cat: "other", es: "tan", en: "so", ex: "Es tan bonito." },
+    { id: "ox144", cat: "other", es: "tanto", en: "so much", ex: "No hables tanto." },
+    { id: "ox145", cat: "other", es: "más", en: "more", ex: "Quiero más café." },
+    { id: "ox146", cat: "other", es: "menos", en: "less", ex: "Tengo menos dinero ahora." },
+    { id: "ox147", cat: "other", es: "mejor", en: "better", ex: "Esto es mejor." },
+    { id: "ox148", cat: "other", es: "peor", en: "worse", ex: "Esto es peor." },
+    { id: "ox149", cat: "other", es: "solamente", en: "only", ex: "Solamente quiero descansar." },
+    { id: "ox150", cat: "other", es: "solo", en: "only / alone", ex: "Vivo solo." },
+    { id: "ox151", cat: "other", es: "justo", en: "just / fair", ex: "Llegué justo a tiempo." },
+    { id: "ox152", cat: "other", es: "apenas", en: "barely", ex: "Apenas puedo caminar." },
+    { id: "ox153", cat: "other", es: "exactamente", en: "exactly", ex: "Eso es exactamente lo que pienso." },
+    { id: "ox154", cat: "other", es: "contra", en: "against", ex: "Luchamos contra el tiempo." },
+    { id: "ox155", cat: "other", es: "según", en: "according to", ex: "Según él, es verdad." },
+    { id: "ox156", cat: "other", es: "ante", en: "before / in front of", ex: "Habló ante todos." },
+    { id: "ox157", cat: "other", es: "tras", en: "after / behind", ex: "Corrió tras el autobús." },
+    { id: "ox158", cat: "other", es: "mediante", en: "by means of", ex: "Lo resolvimos mediante un acuerdo." },
+    { id: "ox159", cat: "other", es: "salvo", en: "except", ex: "Todos vinieron, salvo Juan." },
+    { id: "ox160", cat: "other", es: "excepto", en: "except", ex: "Como de todo, excepto pescado." },
+    { id: "ox161", cat: "other", es: "además", en: "besides", ex: "Además, es muy inteligente." },
+    { id: "ox162", cat: "other", es: "sin embargo", en: "however", ex: "Llovía; sin embargo, salimos." },
+    { id: "ox163", cat: "other", es: "por eso", en: "that's why", ex: "Estudié mucho, por eso aprobé." },
+    { id: "ox164", cat: "other", es: "no obstante", en: "nevertheless", ex: "Es difícil; no obstante, lo intentamos." },
+    { id: "ox165", cat: "other", es: "aparte", en: "apart", ex: "Aparte de eso, todo bien." },
+    { id: "ox166", cat: "other", es: "alguien", en: "someone", ex: "Alguien llamó a la puerta." },
+    { id: "ox167", cat: "other", es: "nadie", en: "no one", ex: "Nadie está en casa." },
+    { id: "ox168", cat: "other", es: "algo", en: "something", ex: "Quiero comer algo." },
+    { id: "ox169", cat: "other", es: "nada", en: "nothing", ex: "No quiero nada." },
+    { id: "ox170", cat: "other", es: "alguno", en: "some / any", ex: "Alguno de ustedes sabe la respuesta." },
+    { id: "ox171", cat: "other", es: "ninguno", en: "none", ex: "Ninguno de ellos vino." },
+    { id: "ox172", cat: "other", es: "cualquiera", en: "anyone / whichever", ex: "Cualquiera puede hacerlo." },
+    { id: "ox173", cat: "other", es: "todos", en: "everyone", ex: "Todos están invitados." },
+    { id: "ox174", cat: "other", es: "varios", en: "several", ex: "Tengo varios libros." },
+    { id: "ox175", cat: "other", es: "otro", en: "other / another", ex: "Necesito otro café." },
+    { id: "ox176", cat: "other", es: "cada", en: "each", ex: "Cada día aprendo algo nuevo." },
+    { id: "ox177", cat: "other", es: "todo", en: "all / everything", ex: "Todo está listo." },
+    { id: "ox178", cat: "other", es: "mismo", en: "same", ex: "Es el mismo problema." },
+    { id: "ox179", cat: "other", es: "propio", en: "own", ex: "Tiene su propio coche." },
+    { id: "ox180", cat: "other", es: "ajeno", en: "belonging to another", ex: "No toques lo ajeno." },
+    // ===== TOPIC: food (20) =====
+    { id: "fo1", cat: "food", es: "el pan", en: "bread", ex: "Como pan cada mañana." },
+    { id: "fo2", cat: "food", es: "el queso", en: "cheese", ex: "Me gusta el queso." },
+    { id: "fo3", cat: "food", es: "la fruta", en: "fruit", ex: "Como fruta todos los días." },
+    { id: "fo4", cat: "food", es: "la carne", en: "meat", ex: "No como carne." },
+    { id: "fo5", cat: "food", es: "el pescado", en: "fish", ex: "El pescado está fresco." },
+    { id: "fo6", cat: "food", es: "el arroz", en: "rice", ex: "Cocino arroz para la cena." },
+    { id: "fo7", cat: "food", es: "la sopa", en: "soup", ex: "La sopa está caliente." },
+    { id: "fo8", cat: "food", es: "el huevo", en: "egg", ex: "Desayuno un huevo." },
+    { id: "fo9", cat: "food", es: "la leche", en: "milk", ex: "Bebo leche por la mañana." },
+    { id: "fo10", cat: "food", es: "el café", en: "coffee", ex: "Tomo café todos los días." },
+    { id: "fo11", cat: "food", es: "el té", en: "tea", ex: "Prefiero el té al café." },
+    { id: "fo12", cat: "food", es: "la manzana", en: "apple", ex: "Como una manzana al día." },
+    { id: "fo13", cat: "food", es: "el plátano", en: "banana", ex: "El plátano está maduro." },
+    { id: "fo14", cat: "food", es: "la naranja", en: "orange (fruit)", ex: "Exprimo una naranja." },
+    { id: "fo15", cat: "food", es: "la verdura", en: "vegetable", ex: "Debo comer más verdura." },
+    { id: "fo16", cat: "food", es: "el postre", en: "dessert", ex: "El postre está delicioso." },
+    { id: "fo17", cat: "food", es: "desayunar", en: "to have breakfast", ex: "Quiero desayunar temprano." },
+    { id: "fo18", cat: "food", es: "almorzar", en: "to have lunch", ex: "Quiero almorzar contigo." },
+    { id: "fo19", cat: "food", es: "cenar", en: "to have dinner", ex: "Quiero cenar en casa." },
+    { id: "fo20", cat: "food", es: "delicioso", en: "delicious", ex: "Esto es muy delicioso." },
+    // ===== TOPIC: travel (20) =====
+    { id: "tr1", cat: "travel", es: "el aeropuerto", en: "airport", ex: "Llegamos al aeropuerto temprano." },
+    { id: "tr2", cat: "travel", es: "el avión", en: "airplane", ex: "El avión despega pronto." },
+    { id: "tr3", cat: "travel", es: "el billete", en: "ticket", ex: "Compré el billete ayer." },
+    { id: "tr4", cat: "travel", es: "la maleta", en: "suitcase", ex: "Hago la maleta hoy." },
+    { id: "tr5", cat: "travel", es: "el pasaporte", en: "passport", ex: "No olvides el pasaporte." },
+    { id: "tr6", cat: "travel", es: "el hotel", en: "hotel", ex: "Reservé un hotel bonito." },
+    { id: "tr7", cat: "travel", es: "la reserva", en: "reservation", ex: "Tengo una reserva para dos." },
+    { id: "tr8", cat: "travel", es: "el mapa", en: "map", ex: "Uso el mapa para orientarme." },
+    { id: "tr9", cat: "travel", es: "la frontera", en: "border", ex: "Cruzamos la frontera de noche." },
+    { id: "tr10", cat: "travel", es: "el turista", en: "tourist", ex: "El turista visita el museo." },
+    { id: "tr11", cat: "travel", es: "volar", en: "to fly", ex: "Quiero volar a España." },
+    { id: "tr12", cat: "travel", es: "reservar", en: "to book", ex: "Quiero reservar un hotel." },
+    { id: "tr13", cat: "travel", es: "llegar", en: "to arrive", ex: "Quiero llegar temprano." },
+    { id: "tr14", cat: "travel", es: "salir", en: "to leave / depart", ex: "Quiero salir mañana." },
+    { id: "tr15", cat: "travel", es: "perderse", en: "to get lost", ex: "No quiero perderme en la ciudad." },
+    { id: "tr16", cat: "travel", es: "explorar", en: "to explore", ex: "Quiero explorar la ciudad." },
+    { id: "tr17", cat: "travel", es: "extranjero", en: "foreign", ex: "Esto es muy extranjero." },
+    { id: "tr18", cat: "travel", es: "lejano", en: "distant", ex: "Este lugar es muy lejano." },
+    { id: "tr19", cat: "travel", es: "barato", en: "cheap", ex: "Este hotel es muy barato." },
+    { id: "tr20", cat: "travel", es: "la aduana", en: "customs", ex: "Pasamos por la aduana rápido." },
+    // ===== TOPIC: animals (20) =====
+    { id: "an1", cat: "animals", es: "el caballo", en: "horse", ex: "El caballo corre rápido." },
+    { id: "an2", cat: "animals", es: "la vaca", en: "cow", ex: "La vaca come hierba." },
+    { id: "an3", cat: "animals", es: "el pájaro", en: "bird", ex: "El pájaro canta por la mañana." },
+    { id: "an4", cat: "animals", es: "el pez", en: "fish (animal)", ex: "El pez nada en el agua." },
+    { id: "an5", cat: "animals", es: "el león", en: "lion", ex: "El león vive en África." },
+    { id: "an6", cat: "animals", es: "el elefante", en: "elephant", ex: "El elefante es muy grande." },
+    { id: "an7", cat: "animals", es: "el oso", en: "bear", ex: "El oso duerme en invierno." },
+    { id: "an8", cat: "animals", es: "el ratón", en: "mouse", ex: "El ratón corre rápido." },
+    { id: "an9", cat: "animals", es: "la serpiente", en: "snake", ex: "La serpiente no tiene patas." },
+    { id: "an10", cat: "animals", es: "la araña", en: "spider", ex: "La araña hace una telaraña." },
+    { id: "an11", cat: "animals", es: "la abeja", en: "bee", ex: "La abeja produce miel." },
+    { id: "an12", cat: "animals", es: "el conejo", en: "rabbit", ex: "El conejo come zanahorias." },
+    { id: "an13", cat: "animals", es: "la oveja", en: "sheep", ex: "La oveja da lana." },
+    { id: "an14", cat: "animals", es: "el mono", en: "monkey", ex: "El mono sube al árbol." },
+    { id: "an15", cat: "animals", es: "el tigre", en: "tiger", ex: "El tigre es muy fuerte." },
+    { id: "an16", cat: "animals", es: "el lobo", en: "wolf", ex: "El lobo vive en el bosque." },
+    { id: "an17", cat: "animals", es: "la mariposa", en: "butterfly", ex: "La mariposa es muy bonita." },
+    { id: "an18", cat: "animals", es: "nadar", en: "to swim", ex: "Quiero nadar en el mar." },
+    { id: "an19", cat: "animals", es: "ladrar", en: "to bark", ex: "El perro suele ladrar de noche." },
+    { id: "an20", cat: "animals", es: "salvaje", en: "wild", ex: "Este animal es muy salvaje." },
+    // ===== TOPIC: family (20) =====
+    { id: "fa1", cat: "family", es: "la madre", en: "mother", ex: "Mi madre cocina muy bien." },
+    { id: "fa2", cat: "family", es: "el padre", en: "father", ex: "Mi padre trabaja mucho." },
+    { id: "fa3", cat: "family", es: "el hermano", en: "brother", ex: "Mi hermano estudia medicina." },
+    { id: "fa4", cat: "family", es: "la hermana", en: "sister", ex: "Mi hermana vive en Madrid." },
+    { id: "fa5", cat: "family", es: "el hijo", en: "son", ex: "Mi hijo tiene diez años." },
+    { id: "fa6", cat: "family", es: "la hija", en: "daughter", ex: "Mi hija va a la escuela." },
+    { id: "fa7", cat: "family", es: "el abuelo", en: "grandfather", ex: "Mi abuelo cuenta buenas historias." },
+    { id: "fa8", cat: "family", es: "la abuela", en: "grandmother", ex: "Mi abuela hace pasteles." },
+    { id: "fa9", cat: "family", es: "el tío", en: "uncle", ex: "Mi tío vive lejos." },
+    { id: "fa10", cat: "family", es: "la tía", en: "aunt", ex: "Mi tía nos visita hoy." },
+    { id: "fa11", cat: "family", es: "el primo", en: "cousin (m)", ex: "Mi primo juega fútbol." },
+    { id: "fa12", cat: "family", es: "la prima", en: "cousin (f)", ex: "Mi prima estudia arte." },
+    { id: "fa13", cat: "family", es: "el esposo", en: "husband", ex: "Mi esposo trabaja en casa." },
+    { id: "fa14", cat: "family", es: "la esposa", en: "wife", ex: "Mi esposa es doctora." },
+    { id: "fa15", cat: "family", es: "el bebé", en: "baby", ex: "El bebé duerme mucho." },
+    { id: "fa16", cat: "family", es: "los padres", en: "parents", ex: "Mis padres viven cerca." },
+    { id: "fa17", cat: "family", es: "el nieto", en: "grandson", ex: "Mi nieto tiene cinco años." },
+    { id: "fa18", cat: "family", es: "la nieta", en: "granddaughter", ex: "Mi nieta canta muy bien." },
+    { id: "fa19", cat: "family", es: "querer", en: "to love / want", ex: "Quiero mucho a mi familia." },
+    { id: "fa20", cat: "family", es: "abrazar", en: "to hug", ex: "Quiero abrazar a mi madre." },
+    // ===== TOPIC: weather (20) =====
+    { id: "we1", cat: "weather", es: "la lluvia", en: "rain", ex: "La lluvia empezó temprano." },
+    { id: "we2", cat: "weather", es: "la nieve", en: "snow", ex: "La nieve cubre las montañas." },
+    { id: "we3", cat: "weather", es: "el viento", en: "wind", ex: "El viento sopla fuerte." },
+    { id: "we4", cat: "weather", es: "la nube", en: "cloud", ex: "Hay una nube gris." },
+    { id: "we5", cat: "weather", es: "la tormenta", en: "storm", ex: "La tormenta llega esta noche." },
+    { id: "we6", cat: "weather", es: "el trueno", en: "thunder", ex: "Escuché un trueno fuerte." },
+    { id: "we7", cat: "weather", es: "el rayo", en: "lightning", ex: "Un rayo cayó cerca." },
+    { id: "we8", cat: "weather", es: "el hielo", en: "ice", ex: "El hielo cubre la calle." },
+    { id: "we9", cat: "weather", es: "la niebla", en: "fog", ex: "Hay niebla esta mañana." },
+    { id: "we10", cat: "weather", es: "el arcoíris", en: "rainbow", ex: "Vimos un arcoíris después de la lluvia." },
+    { id: "we11", cat: "weather", es: "llover", en: "to rain", ex: "Va a llover mañana." },
+    { id: "we12", cat: "weather", es: "nevar", en: "to snow", ex: "Va a nevar esta noche." },
+    { id: "we13", cat: "weather", es: "soleado", en: "sunny", ex: "Hoy está muy soleado." },
+    { id: "we14", cat: "weather", es: "nublado", en: "cloudy", ex: "Hoy está muy nublado." },
+    { id: "we15", cat: "weather", es: "húmedo", en: "humid", ex: "El aire está muy húmedo." },
+    { id: "we16", cat: "weather", es: "seco", en: "dry", ex: "El clima aquí es muy seco." },
+    { id: "we17", cat: "weather", es: "templado", en: "mild", ex: "El clima es muy templado." },
+    { id: "we18", cat: "weather", es: "la temperatura", en: "temperature", ex: "La temperatura baja de noche." },
+    { id: "we19", cat: "weather", es: "el clima", en: "climate", ex: "El clima aquí es agradable." },
+    { id: "we20", cat: "weather", es: "el pronóstico", en: "forecast", ex: "Miro el pronóstico cada mañana." },
+    // ===== TOPIC: colors (20) =====
+    { id: "co1", cat: "colors", es: "rojo", en: "red", ex: "Esto es muy rojo." },
+    { id: "co2", cat: "colors", es: "azul", en: "blue", ex: "El cielo es muy azul." },
+    { id: "co3", cat: "colors", es: "verde", en: "green", ex: "La hierba es muy verde." },
+    { id: "co4", cat: "colors", es: "amarillo", en: "yellow", ex: "El sol es muy amarillo." },
+    { id: "co5", cat: "colors", es: "negro", en: "black", ex: "Mi coche es negro." },
+    { id: "co6", cat: "colors", es: "blanco", en: "white", ex: "La nieve es blanca." },
+    { id: "co7", cat: "colors", es: "gris", en: "gray", ex: "El cielo está gris." },
+    { id: "co8", cat: "colors", es: "marrón", en: "brown", ex: "La mesa es marrón." },
+    { id: "co9", cat: "colors", es: "rosa", en: "pink", ex: "La flor es rosa." },
+    { id: "co10", cat: "colors", es: "morado", en: "purple", ex: "Mi camisa es morada." },
+    { id: "co11", cat: "colors", es: "naranja", en: "orange (color)", ex: "La fruta es naranja." },
+    { id: "co12", cat: "colors", es: "dorado", en: "golden", ex: "El anillo es dorado." },
+    { id: "co13", cat: "colors", es: "plateado", en: "silver", ex: "El reloj es plateado." },
+    { id: "co14", cat: "colors", es: "claro", en: "light-colored", ex: "Prefiero los colores claros." },
+    { id: "co15", cat: "colors", es: "oscuro", en: "dark", ex: "Prefiero los colores oscuros." },
+    { id: "co16", cat: "colors", es: "colorido", en: "colorful", ex: "El mercado es muy colorido." },
+    { id: "co17", cat: "colors", es: "pintar", en: "to paint", ex: "Quiero pintar la pared." },
+    { id: "co18", cat: "colors", es: "teñir", en: "to dye", ex: "Quiero teñir mi pelo." },
+    { id: "co19", cat: "colors", es: "brillante", en: "bright / shiny", ex: "Esto es muy brillante." },
+    { id: "co20", cat: "colors", es: "pálido", en: "pale", ex: "Su color es muy pálido." },
+    // ===== TOPIC: body (20) =====
+    { id: "bo1", cat: "body", es: "la cabeza", en: "head", ex: "Me duele la cabeza." },
+    { id: "bo2", cat: "body", es: "el ojo", en: "eye", ex: "Tengo los ojos verdes." },
+    { id: "bo3", cat: "body", es: "la nariz", en: "nose", ex: "Me pica la nariz." },
+    { id: "bo4", cat: "body", es: "la boca", en: "mouth", ex: "Abre la boca, por favor." },
+    { id: "bo5", cat: "body", es: "la oreja", en: "ear", ex: "Me duele la oreja." },
+    { id: "bo6", cat: "body", es: "el brazo", en: "arm", ex: "Me duele el brazo." },
+    { id: "bo7", cat: "body", es: "la mano", en: "hand", ex: "Lávate las manos." },
+    { id: "bo8", cat: "body", es: "la pierna", en: "leg", ex: "Me duele la pierna." },
+    { id: "bo9", cat: "body", es: "el pie", en: "foot", ex: "Tengo el pie hinchado." },
+    { id: "bo10", cat: "body", es: "el dedo", en: "finger", ex: "Me corté el dedo." },
+    { id: "bo11", cat: "body", es: "el corazón", en: "heart", ex: "Mi corazón late rápido." },
+    { id: "bo12", cat: "body", es: "la espalda", en: "back", ex: "Me duele la espalda." },
+    { id: "bo13", cat: "body", es: "el cuello", en: "neck", ex: "Tengo el cuello tenso." },
+    { id: "bo14", cat: "body", es: "el pelo", en: "hair", ex: "Tengo el pelo largo." },
+    { id: "bo15", cat: "body", es: "la piel", en: "skin", ex: "Tengo la piel sensible." },
+    { id: "bo16", cat: "body", es: "doler", en: "to hurt", ex: "Me suele doler la cabeza." },
+    { id: "bo17", cat: "body", es: "respirar", en: "to breathe", ex: "Necesito respirar aire fresco." },
+    { id: "bo18", cat: "body", es: "sano", en: "healthy", ex: "Me siento muy sano." },
+    { id: "bo19", cat: "body", es: "herido", en: "injured", ex: "Está muy herido." },
+    { id: "bo20", cat: "body", es: "cansado", en: "tired", ex: "Estoy muy cansado." },
+    // ===== TOPIC: clothing (20) =====
+    { id: "cl1", cat: "clothing", es: "la camisa", en: "shirt", ex: "Llevo una camisa azul." },
+    { id: "cl2", cat: "clothing", es: "el pantalón", en: "pants", ex: "Necesito un pantalón nuevo." },
+    { id: "cl3", cat: "clothing", es: "el vestido", en: "dress", ex: "El vestido es muy bonito." },
+    { id: "cl4", cat: "clothing", es: "la falda", en: "skirt", ex: "Compré una falda roja." },
+    { id: "cl5", cat: "clothing", es: "el zapato", en: "shoe", ex: "Necesito zapatos nuevos." },
+    { id: "cl6", cat: "clothing", es: "la chaqueta", en: "jacket", ex: "Llevo una chaqueta de cuero." },
+    { id: "cl7", cat: "clothing", es: "el sombrero", en: "hat", ex: "Llevo un sombrero en verano." },
+    { id: "cl8", cat: "clothing", es: "el cinturón", en: "belt", ex: "Necesito un cinturón nuevo." },
+    { id: "cl9", cat: "clothing", es: "la bufanda", en: "scarf", ex: "Llevo bufanda en invierno." },
+    { id: "cl10", cat: "clothing", es: "el guante", en: "glove", ex: "Necesito guantes para el frío." },
+    { id: "cl11", cat: "clothing", es: "el calcetín", en: "sock", ex: "Perdí un calcetín." },
+    { id: "cl12", cat: "clothing", es: "el abrigo", en: "coat", ex: "Llevo abrigo en invierno." },
+    { id: "cl13", cat: "clothing", es: "la ropa interior", en: "underwear", ex: "Compro ropa interior nueva." },
+    { id: "cl14", cat: "clothing", es: "el traje", en: "suit", ex: "Llevo traje al trabajo." },
+    { id: "cl15", cat: "clothing", es: "ponerse", en: "to put on", ex: "Quiero ponerme el abrigo." },
+    { id: "cl16", cat: "clothing", es: "quitarse", en: "to take off", ex: "Quiero quitarme los zapatos." },
+    { id: "cl17", cat: "clothing", es: "vestirse", en: "to get dressed", ex: "Necesito vestirme rápido." },
+    { id: "cl18", cat: "clothing", es: "elegante", en: "elegant", ex: "Esto es muy elegante." },
+    { id: "cl19", cat: "clothing", es: "cómodo", en: "comfortable", ex: "Esta ropa es muy cómoda." },
+    { id: "cl20", cat: "clothing", es: "ajustado", en: "tight-fitting", ex: "Este pantalón está muy ajustado." },
+    // ===== TOPIC: home (20) =====
+    { id: "ho1", cat: "home", es: "la cocina", en: "kitchen", ex: "Cocino en la cocina." },
+    { id: "ho2", cat: "home", es: "el baño", en: "bathroom", ex: "El baño está limpio." },
+    { id: "ho3", cat: "home", es: "el dormitorio", en: "bedroom", ex: "Duermo en mi dormitorio." },
+    { id: "ho4", cat: "home", es: "la sala", en: "living room", ex: "Vemos la tele en la sala." },
+    { id: "ho5", cat: "home", es: "el jardín", en: "garden", ex: "Riego el jardín cada día." },
+    { id: "ho6", cat: "home", es: "el techo", en: "roof", ex: "El techo está roto." },
+    { id: "ho7", cat: "home", es: "la ventana", en: "window", ex: "Abre la ventana, por favor." },
+    { id: "ho8", cat: "home", es: "la pared", en: "wall", ex: "Pinté la pared de azul." },
+    { id: "ho9", cat: "home", es: "el suelo", en: "floor", ex: "El suelo está limpio." },
+    { id: "ho10", cat: "home", es: "la escalera", en: "stairs", ex: "Subo la escalera cada día." },
+    { id: "ho11", cat: "home", es: "el armario", en: "closet", ex: "Guardo la ropa en el armario." },
+    { id: "ho12", cat: "home", es: "la cama", en: "bed", ex: "Hago la cama cada mañana." },
+    { id: "ho13", cat: "home", es: "el sofá", en: "sofa", ex: "Descanso en el sofá." },
+    { id: "ho14", cat: "home", es: "la lámpara", en: "lamp", ex: "Enciendo la lámpara de noche." },
+    { id: "ho15", cat: "home", es: "el espejo", en: "mirror", ex: "Me miro en el espejo." },
+    { id: "ho16", cat: "home", es: "limpiar", en: "to clean", ex: "Quiero limpiar la casa." },
+    { id: "ho17", cat: "home", es: "decorar", en: "to decorate", ex: "Quiero decorar mi dormitorio." },
+    { id: "ho18", cat: "home", es: "amueblado", en: "furnished", ex: "El piso está muy amueblado." },
+    { id: "ho19", cat: "home", es: "acogedor", en: "cozy", ex: "Este lugar es muy acogedor." },
+    { id: "ho20", cat: "home", es: "espacioso", en: "spacious", ex: "El apartamento es muy espacioso." },
+    // ===== TOPIC: emotions (20) =====
+    { id: "em1", cat: "emotions", es: "el amor", en: "love", ex: "El amor es importante." },
+    { id: "em2", cat: "emotions", es: "el miedo", en: "fear", ex: "Tengo miedo de las arañas." },
+    { id: "em3", cat: "emotions", es: "la alegría", en: "joy", ex: "Siento mucha alegría hoy." },
+    { id: "em4", cat: "emotions", es: "la ira", en: "anger", ex: "Controla tu ira." },
+    { id: "em5", cat: "emotions", es: "la sorpresa", en: "surprise", ex: "Fue una gran sorpresa." },
+    { id: "em6", cat: "emotions", es: "los celos", en: "jealousy", ex: "Los celos son difíciles de controlar." },
+    { id: "em7", cat: "emotions", es: "la vergüenza", en: "shame / embarrassment", ex: "Sentí mucha vergüenza." },
+    { id: "em8", cat: "emotions", es: "la esperanza", en: "hope", ex: "Nunca pierdo la esperanza." },
+    { id: "em9", cat: "emotions", es: "la calma", en: "calm", ex: "Necesito un poco de calma." },
+    { id: "em10", cat: "emotions", es: "la ansiedad", en: "anxiety", ex: "Siento mucha ansiedad hoy." },
+    { id: "em11", cat: "emotions", es: "amar", en: "to love", ex: "Quiero amar sin miedo." },
+    { id: "em12", cat: "emotions", es: "odiar", en: "to hate", ex: "No quiero odiar a nadie." },
+    { id: "em13", cat: "emotions", es: "reír", en: "to laugh", ex: "Me gusta reír mucho." },
+    { id: "em14", cat: "emotions", es: "llorar", en: "to cry", ex: "No quiero llorar hoy." },
+    { id: "em15", cat: "emotions", es: "sonreír", en: "to smile", ex: "Me gusta sonreír siempre." },
+    { id: "em16", cat: "emotions", es: "preocuparse", en: "to worry", ex: "No quiero preocuparme tanto." },
+    { id: "em17", cat: "emotions", es: "emocionado", en: "excited", ex: "Estoy muy emocionado." },
+    { id: "em18", cat: "emotions", es: "nervioso", en: "nervous", ex: "Estoy muy nervioso hoy." },
+    { id: "em19", cat: "emotions", es: "orgulloso", en: "proud", ex: "Estoy muy orgulloso de ti." },
+    { id: "em20", cat: "emotions", es: "celoso", en: "jealous", ex: "Está muy celoso." }
   ];
 
   const STORAGE_KEY = "learned-word-ids";
@@ -1499,7 +1598,6 @@
   let sessionTotal = 0;    // queue length at session start (for progress bar)
 
   function wordsByCat(cat) {
-    if (cat === "mix") return WORDS;
     return WORDS.filter(w => w.cat === cat);
   }
 
@@ -1619,11 +1717,6 @@
       </div>
       <div class="tally">Total learned: <strong>${tt} / ${total}</strong></div>
 
-      <button class="mix-mode-btn" data-cat="mix">
-        <span class="mix-mode-title serif">Mix mode</span>
-        <span class="mix-mode-sub">All categories and topics · ${total} words</span>
-      </button>
-
       <p class="section-label">MAIN CATEGORIES</p>
       <div class="tiles">
     `;
@@ -1668,16 +1761,14 @@
     document.getElementById("app").innerHTML = html;
 
     document.getElementById("reset-btn").addEventListener("click", resetProgress);
-    document.querySelectorAll(".tile, .topic-tile, .mix-mode-btn").forEach(el => {
+    document.querySelectorAll(".tile, .topic-tile").forEach(el => {
       el.addEventListener("click", () => startSession(el.dataset.cat, false));
     });
   }
 
   function renderSession() {
-    const c = activeCat === "mix"
-      ? { es: "Mezcla", en: "Mix mode", cls: "mix", group: "main" }
-      : CATEGORIES[activeCat];
-    const chipCls = activeCat === "mix" ? "mix" : (c.group === "main" ? c.cls : "sub");
+    const c = CATEGORIES[activeCat];
+    const chipCls = c.group === "main" ? c.cls : "sub";
     const doneInSession = sessionTotal - queue.length;
     const pct = Math.round((doneInSession / sessionTotal) * 100);
 
@@ -1698,6 +1789,7 @@
           <div class="card-face card-back">
             <span class="card-cat-label">ENGLISH</span>
             <p class="card-word serif">${esc(current.en)}</p>
+            <p class="card-example">${esc(current.ex)}</p>
             <p class="card-hint">tap to flip back</p>
           </div>
         </div>
@@ -1726,9 +1818,7 @@
   }
 
   function renderComplete() {
-    const c = activeCat === "mix"
-      ? { es: "Mezcla", en: "Mix mode" }
-      : CATEGORIES[activeCat];
+    const c = CATEGORIES[activeCat];
     const html = `
       <div class="complete">
         <p class="complete-title serif">¡Excelente!</p>
@@ -1752,7 +1842,6 @@
   }
 
   loadProgress();
-})();
-</script>
+})();</script>
 </body>
 </html>
