@@ -1,6 +1,7 @@
 # las-palabritas
 Word cards
 
+- v0.54 - Rewrote all 180 templated verb examples ("Quiero X.") with contextual sentences; fixed grammatically broken reflexive-verb placeholders (e.g. "Quiero levantarse" → "Necesito levantarme")
 - v0.53 - Fixed "Couldn't save progress" error: storage now falls back to localStorage when window.storage (Claude Artifact only) isn't available
 - v0.52 - Removed duplicate thematic-topic words, disambiguated near-synonym pairs, added version footer
 - v0.51 - More words
