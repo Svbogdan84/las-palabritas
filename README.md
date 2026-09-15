@@ -1,6 +1,7 @@
 # las-palabritas
 Word cards
 
+- v0.52 - Fixed duplicates and examples
 - v0.51 - More words
 - v0.5 - Add Rus
 - v0.4 - Add Ukr
