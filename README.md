@@ -1,6 +1,8 @@
 # las-palabritas
 Word cards
 
+- v0.53 - Fixed "Couldn't save progress" error: storage now falls back to localStorage when window.storage (Claude Artifact only) isn't available
+- v0.52 - Removed duplicate thematic-topic words, disambiguated near-synonym pairs, added version footer
 - v0.51 - More words
 - v0.5 - Add Rus
 - v0.4 - Add Ukr
@@ -8,7 +10,7 @@ Word cards
 - v0.2 - Examples were added
 - v0.1
 
-> A lightweight, offline-first, zero-dependency single-page web application for mastering Spanish vocabulary with multi-language support (English, Ukrainian, Russian), interactive 3D flashcards, and category-based progress tracking.
+> A lightweight, zero-dependency single-page web application for mastering Spanish vocabulary with multi-language support (English, Ukrainian, Russian), interactive 3D flashcards, and category-based progress tracking.
 
 ![Palabritas Banner](https://img.shields.io/badge/Language-Spanish%20%28Espa%C3%B1ol%29-C99A44?style=for-the-badge)
 ![UI Languages](https://img.shields.io/badge/UI_Languages-EN%20%7C%20UK%20%7C%20RU-22303F?style=for-the-badge)
@@ -45,10 +47,10 @@ Whether you are an English, Ukrainian, or Russian speaker learning Spanish, Pala
   - **Main Grammatical Categories**: Focus on core parts of speech (*Nouns, Adjectives, Verbs, Others*).
   - **Thematic Topics**: Target contextual vocabulary modules (*Food, Travel, Animals, Family, Weather, Colors, Body, Clothing, Home, Emotions*).
 - 🔀 **Mix Mode Deck**: Combine all categories and topics into a randomized full-deck practice session.
-- 📊 **Persistent Progress Tracking**: Automatically tracks learned words per category using `localStorage`, displaying progress bars, percentages, and completed badges.
+- 📊 **Persistent Progress Tracking**: Automatically tracks learned words per category. Uses the Claude Artifacts `window.storage` API when run inside an Artifact, and falls back to `localStorage` when run as a standalone file — displaying progress bars, percentages, and completed badges either way.
 - 🔄 **Smart Session Management**: Skip cards for review later, mark mastered words, and review completed decks at any time.
 - 📱 **Mobile-First Responsive Layout**: Optimized for smartphones, tablets, and desktop displays with touch-friendly targets.
-- ⚡ **Zero Latency & Privacy First**: Runs 100% locally in the browser with zero external data collection, tracking, or network requests.
+- ⚡ **No Build Step, No Tracking**: No server infrastructure, build tools, or third-party JavaScript libraries — no analytics or ad tracking of any kind. Progress persists via the Claude Artifacts `window.storage` API.
 
 ---
 
