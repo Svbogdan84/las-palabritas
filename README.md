@@ -1,6 +1,8 @@
 # las-palabritas
 Word cards
 
+- v0.56 - Rewrote all 181 templated noun examples ("Me gusta X.") with contextual sentences
+- v0.55 - Rewrote all 183 templated adjective examples ("Esto es muy X.") with contextual ser/estar sentences, gender-agreement corrected
 - v0.54 - Rewrote all 180 templated verb examples ("Quiero X.") with contextual sentences; fixed grammatically broken reflexive-verb placeholders (e.g. "Quiero levantarse" → "Necesito levantarme")
 - v0.53 - Fixed "Couldn't save progress" error: storage now falls back to localStorage when window.storage (Claude Artifact only) isn't available
 - v0.52 - Removed duplicate thematic-topic words, disambiguated near-synonym pairs, added version footer
