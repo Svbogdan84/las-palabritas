@@ -1,6 +1,10 @@
 # las-palabritas
 Word cards
 
+- v0.58 - Added simple Web Audio sound effects (synthesized, zero external assets) for new card, flip card and "I know this"
+- v0.57 - Rewrote all 162 templated thematic-topic examples ("Me gusta X.") across food, travel, animals, family, weather, colors, body, clothing, home, and emotions with contextual sentences; fixed 5 stray adjective placeholders ("Esto es muy X.": delicioso, extranjero, rojo, brillante, elegante)
+- v0.56 - Rewrote all 181 templated noun examples ("Me gusta X.") with contextual sentences
+- v0.55 - Rewrote all 183 templated adjective examples ("Esto es muy X.") with contextual ser/estar sentences, gender-agreement corrected
 - v0.54 - Rewrote all 180 templated verb examples ("Quiero X.") with contextual sentences; fixed grammatically broken reflexive-verb placeholders (e.g. "Quiero levantarse" → "Necesito levantarme")
 - v0.53 - Fixed "Couldn't save progress" error: storage now falls back to localStorage when window.storage (Claude Artifact only) isn't available
 - v0.52 - Removed duplicate thematic-topic words, disambiguated near-synonym pairs, added version footer
