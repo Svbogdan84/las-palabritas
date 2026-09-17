@@ -546,7 +546,7 @@
 </head>
 <body>
 <div id="app"><div class="loading">Loading…</div></div>
-<div class="app-version">v0.58</div>
+<div class="app-version">v0.60</div>
 
 <script>
 (function () {
@@ -573,8 +573,11 @@
     en: {
       totalLearned: "Total learned:",
       resetProgress: "Reset progress",
-      mixModeTitle: "Mix mode",
+      mixModeTitle: "All words",
       mixModeSub: (n) => `All categories and topics · ${n} words`,
+      reverseMode: "Reverse mode",
+      reverseModeTooltip: (on) => on ? "Reverse mode: on (translation → Spanish)" : "Reverse mode: off (Spanish → translation)",
+      spanishLabel: "SPANISH",
       mainCategories: "MAIN CATEGORIES",
       topics: "TOPICS",
       learnedOf: (done, total) => `${done} / ${total} learned`,
@@ -590,7 +593,7 @@
       backToCategoriesBtn: "Back to categories",
       reviewAgain: "Review these words again",
       resetConfirm: "Reset all progress? This clears every word you've learned.",
-      mixName: "Mix mode",
+      mixName: "All words",
       loadError: "Couldn't load your saved progress — starting fresh.",
       saveError: "Couldn't save your progress. Check your connection and try again.",
       dismiss: "Dismiss",
@@ -600,8 +603,11 @@
     uk: {
       totalLearned: "Вивчено всього:",
       resetProgress: "Скинути прогрес",
-      mixModeTitle: "Режим мікс",
+      mixModeTitle: "Усі слова",
       mixModeSub: (n) => `Усі категорії й теми · ${n} слів`,
+      reverseMode: "Зворотний режим",
+      reverseModeTooltip: (on) => on ? "Зворотний режим: увімкнено (переклад → іспанська)" : "Зворотний режим: вимкнено (іспанська → переклад)",
+      spanishLabel: "ІСПАНСЬКА",
       mainCategories: "ОСНОВНІ КАТЕГОРІЇ",
       topics: "ТЕМИ",
       learnedOf: (done, total) => `${done} / ${total} вивчено`,
@@ -617,7 +623,7 @@
       backToCategoriesBtn: "До категорій",
       reviewAgain: "Повторити ці слова знову",
       resetConfirm: "Скинути весь прогрес? Це видалить усі вивчені слова.",
-      mixName: "Мікс",
+      mixName: "Усі слова",
       loadError: "Не вдалося завантажити збережений прогрес — починаємо заново.",
       saveError: "Не вдалося зберегти прогрес. Перевірте з'єднання і спробуйте ще раз.",
       dismiss: "Закрити",
@@ -627,8 +633,11 @@
     ru: {
       totalLearned: "Всего выучено:",
       resetProgress: "Сбросить прогресс",
-      mixModeTitle: "Режим микс",
+      mixModeTitle: "Все слова",
       mixModeSub: (n) => `Все категории и темы · ${n} слов`,
+      reverseMode: "Обратный режим",
+      reverseModeTooltip: (on) => on ? "Обратный режим: включён (перевод → испанский)" : "Обратный режим: выключен (испанский → перевод)",
+      spanishLabel: "ИСПАНСКИЙ",
       mainCategories: "ОСНОВНЫЕ КАТЕГОРИИ",
       topics: "ТЕМЫ",
       learnedOf: (done, total) => `${done} / ${total} выучено`,
@@ -644,7 +653,7 @@
       backToCategoriesBtn: "К категориям",
       reviewAgain: "Повторить эти слова снова",
       resetConfirm: "Сбросить весь прогресс? Это удалит все выученные слова.",
-      mixName: "Микс",
+      mixName: "Все слова",
       loadError: "Не удалось загрузить сохранённый прогресс — начинаем заново.",
       saveError: "Не удалось сохранить прогресс. Проверьте соединение и попробуйте снова.",
       dismiss: "Закрыть",
@@ -1829,6 +1838,7 @@
   const STORAGE_KEY = "learned-word-ids";
   const LANG_KEY = "ui-language";
   const MUTE_KEY = "sound-muted";
+  const REVERSE_KEY = "reverse-mode";
 
   // Use window.storage when running as a Claude Artifact; otherwise fall
   // back to localStorage so the app also works as a standalone HTML file.
@@ -1960,6 +1970,7 @@
   let learned = {};        // { wordId: true }
   let storageReady = false;
   let lang = "en";          // "en" | "uk"
+  let reverseMode = false;  // false: Esp -> target lang · true: target lang -> Esp
   let storageError = null;  // null | "load" | "save"
 
   let view = "picker";     // "picker" | "session" | "complete"
@@ -2024,6 +2035,15 @@
       muted = false;
       hadError = true;
     }
+    try {
+      const reverseRes = await storageGet(REVERSE_KEY);
+      if (reverseRes && reverseRes.value != null) {
+        reverseMode = reverseRes.value === "true";
+      }
+    } catch (e) {
+      reverseMode = false;
+      hadError = true;
+    }
     if (hadError) storageError = "load";
     storageReady = true;
     render();
@@ -2059,6 +2079,22 @@
   function toggleMute() {
     muted = !muted;
     saveMute();
+    render();
+  }
+
+  async function saveReverseMode() {
+    try {
+      await storageSet(REVERSE_KEY, String(reverseMode));
+    } catch (e) {
+      console.error("Could not save reverse mode preference", e);
+      storageError = "save";
+      render();
+    }
+  }
+
+  function toggleReverseMode() {
+    reverseMode = !reverseMode;
+    saveReverseMode();
     render();
   }
 
@@ -2156,6 +2192,7 @@
       <div class="top">
         <div class="brand serif"><em>Pala</em>britas</div>
         <div class="lang-switch">
+          <button class="flag-btn reverse-btn ${reverseMode ? 'flag-active' : ''}" id="reverse-btn" title="${ui.reverseModeTooltip(reverseMode)}" aria-label="${ui.reverseMode}" aria-pressed="${reverseMode}">🔁</button>
           <button class="flag-btn mute-btn" id="mute-btn" title="${muted ? ui.unmuteSound : ui.muteSound}" aria-label="${muted ? ui.unmuteSound : ui.muteSound}" aria-pressed="${muted}">${muted ? '🔇' : '🔊'}</button>
           <button class="flag-btn ${lang === 'en' ? 'flag-active' : ''}" id="lang-en" title="English" aria-label="English">🇺🇸</button>
           <button class="flag-btn ${lang === 'uk' ? 'flag-active' : ''}" id="lang-uk" title="Українська" aria-label="Українська">🇺🇦</button>
@@ -2217,6 +2254,7 @@
     document.getElementById("app").innerHTML = html;
 
     document.getElementById("reset-btn") && document.getElementById("reset-btn").addEventListener("click", resetProgress);
+    document.getElementById("reverse-btn").addEventListener("click", toggleReverseMode);
     document.getElementById("mute-btn").addEventListener("click", toggleMute);
     document.getElementById("lang-en").addEventListener("click", () => setLang("en"));
     document.getElementById("lang-uk").addEventListener("click", () => setLang("uk"));
@@ -2228,12 +2266,16 @@
 
   function renderSession() {
     const c = activeCat === "mix"
-      ? { es: "Mezcla", en: "Mix mode", uk: "Мікс", ru: "Микс", cls: "mix", group: "main" }
+      ? { es: "Mezcla", en: "All words", uk: "Усі слова", ru: "Все слова", cls: "mix", group: "main" }
       : CATEGORIES[activeCat];
     const chipCls = activeCat === "mix" ? "mix" : (c.group === "main" ? c.cls : "sub");
     const doneInSession = sessionTotal - queue.length;
     const pct = Math.round((doneInSession / sessionTotal) * 100);
     const ui = t();
+
+    const frontWord = reverseMode ? transOf(current) : current.es;
+    const backWord = reverseMode ? current.es : transOf(current);
+    const backLabel = reverseMode ? ui.spanishLabel : ui.englishLabel;
 
     const html = `
       <div class="session-top">
@@ -2247,15 +2289,15 @@
 
       <div class="card-wrap">
         <div class="card ${flipped ? 'flipped' : ''}" id="card" role="button" tabindex="0"
-             aria-pressed="${flipped}" aria-label="${esc(flipped ? transOf(current) + '. ' + ui.tapToFlipBack : current.es + '. ' + ui.tapToReveal)}">
+             aria-pressed="${flipped}" aria-label="${esc(flipped ? backWord + '. ' + ui.tapToFlipBack : frontWord + '. ' + ui.tapToReveal)}">
           <div class="card-face card-front">
             <span class="card-cat-label">${catName(c).toUpperCase()}</span>
-            <p class="card-word serif">${esc(current.es)}</p>
+            <p class="card-word serif">${esc(frontWord)}</p>
             <p class="card-hint">${ui.tapToReveal}</p>
           </div>
           <div class="card-face card-back">
-            <span class="card-cat-label">${ui.englishLabel}</span>
-            <p class="card-word serif">${esc(transOf(current))}</p>
+            <span class="card-cat-label">${backLabel}</span>
+            <p class="card-word serif">${esc(backWord)}</p>
             <p class="card-example">${esc(current.ex)}</p>
             <p class="card-hint">${ui.tapToFlipBack}</p>
           </div>
@@ -2263,7 +2305,7 @@
       </div>
 
       <div class="actions">
-        <button class="btn btn-skip" id="skip-btn" ${flipped ? '' : 'disabled'}>${ui.skip}</button>
+        <button class="btn btn-skip" id="skip-btn">${ui.skip}</button>
         <button class="btn btn-learned" id="learned-btn" ${flipped ? '' : 'disabled'}>${ui.knowThis}</button>
       </div>
     `;
@@ -2298,7 +2340,7 @@
 
   function renderComplete() {
     const c = activeCat === "mix"
-      ? { es: "Mezcla", en: "Mix mode", uk: "Мікс", ru: "Микс" }
+      ? { es: "Mezcla", en: "All words", uk: "Усі слова", ru: "Все слова" }
       : CATEGORIES[activeCat];
     const ui = t();
     const html = `
