@@ -546,7 +546,7 @@
 </head>
 <body>
 <div id="app"><div class="loading">Loading…</div></div>
-<div class="app-version">v0.63</div>
+<div class="app-version">v0.64</div>
 
 <script>
 (function () {
@@ -1869,6 +1869,19 @@
     return audioCtx;
   }
 
+  let noiseBuffer = null;
+  function getNoiseBuffer(ctx) {
+    if (!noiseBuffer) {
+      const len = Math.ceil(ctx.sampleRate * 0.3);
+      noiseBuffer = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = noiseBuffer.getChannelData(0);
+      for (let i = 0; i < len; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+    }
+    return noiseBuffer;
+  }
+
   function playTone(ctx, freq, startTime, duration, peakGain) {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -1881,6 +1894,30 @@
     gain.connect(ctx.destination);
     osc.start(startTime);
     osc.stop(startTime + duration + 0.02);
+  }
+
+  function playSkipSound() {
+    if (muted) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const source = ctx.createBufferSource();
+    source.buffer = getNoiseBuffer(ctx);
+    const filter = ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.Q.value = 0.9;
+    filter.frequency.setValueAtTime(1500, now);
+    filter.frequency.exponentialRampToValueAtTime(500, now + 0.17);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.linearRampToValueAtTime(0.06, now + 0.03);
+    gain.gain.linearRampToValueAtTime(0.035, now + 0.09);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.19);
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(ctx.destination);
+    source.start(now);
+    source.stop(now + 0.22);
   }
 
   function playNewCardSound(delay) {
@@ -2073,6 +2110,7 @@
   }
 
   function markSkip() {
+    playSkipSound();
     queue.shift();
     queue.push(current);
     nextCard();
