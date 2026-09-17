@@ -298,6 +298,16 @@
     margin-bottom: 22px;
   }
 
+  .session-top-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mute-btn {
+    padding: 6px 9px;
+  }
+
   .back-btn {
     background: none;
     border: none;
@@ -536,7 +546,7 @@
 </head>
 <body>
 <div id="app"><div class="loading">Loading…</div></div>
-<div class="app-version">v0.57</div>
+<div class="app-version">v0.63</div>
 
 <script>
 (function () {
@@ -583,7 +593,9 @@
       mixName: "Mix mode",
       loadError: "Couldn't load your saved progress — starting fresh.",
       saveError: "Couldn't save your progress. Check your connection and try again.",
-      dismiss: "Dismiss"
+      dismiss: "Dismiss",
+      muteSound: "Mute sound",
+      unmuteSound: "Unmute sound"
     },
     uk: {
       totalLearned: "Вивчено всього:",
@@ -608,7 +620,9 @@
       mixName: "Мікс",
       loadError: "Не вдалося завантажити збережений прогрес — починаємо заново.",
       saveError: "Не вдалося зберегти прогрес. Перевірте з'єднання і спробуйте ще раз.",
-      dismiss: "Закрити"
+      dismiss: "Закрити",
+      muteSound: "Вимкнути звук",
+      unmuteSound: "Увімкнути звук"
     },
     ru: {
       totalLearned: "Всего выучено:",
@@ -633,7 +647,9 @@
       mixName: "Микс",
       loadError: "Не удалось загрузить сохранённый прогресс — начинаем заново.",
       saveError: "Не удалось сохранить прогресс. Проверьте соединение и попробуйте снова.",
-      dismiss: "Закрыть"
+      dismiss: "Закрыть",
+      muteSound: "Выключить звук",
+      unmuteSound: "Включить звук"
     }
   };
 
@@ -1812,6 +1828,7 @@
 
   const STORAGE_KEY = "learned-word-ids";
   const LANG_KEY = "ui-language";
+  const MUTE_KEY = "sound-muted";
 
   // Use window.storage when running as a Claude Artifact; otherwise fall
   // back to localStorage so the app also works as a standalone HTML file.
@@ -1834,6 +1851,73 @@
     }
     localStorage.setItem(key, value);
     return { key, value, shared: false };
+  }
+
+  // ---------- Simple synthesized sound effects (zero external assets) ----------
+  let audioCtx = null;
+  let muted = false;
+
+  function ensureAudio() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) {
+      try { audioCtx = new AC(); } catch (e) { return null; }
+    }
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume().catch(() => {});
+    }
+    return audioCtx;
+  }
+
+  function playTone(ctx, freq, startTime, duration, peakGain) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, startTime);
+    gain.gain.setValueAtTime(0, startTime);
+    gain.gain.linearRampToValueAtTime(peakGain, startTime + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(startTime);
+    osc.stop(startTime + duration + 0.02);
+  }
+
+  function playNewCardSound(delay) {
+    if (muted) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const now = ctx.currentTime + (delay || 0);
+    playTone(ctx, 440, now, 0.09, 0.08);
+    playTone(ctx, 659.25, now + 0.07, 0.11, 0.08);
+  }
+
+  function playLearnedSound() {
+    if (muted) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const now = ctx.currentTime;
+    const fundamental = 784; // G5
+    const partials = [
+      { mult: 1,    gain: 0.09  },
+      { mult: 2.01, gain: 0.045 },
+      { mult: 2.76, gain: 0.028 },
+      { mult: 4.07, gain: 0.016 }
+    ];
+    const decay = 0.55;
+    partials.forEach(p => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(fundamental * p.mult, now);
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(p.gain, now + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + decay);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + decay + 0.05);
+    });
   }
 
   let learned = {};        // { wordId: true }
@@ -1894,6 +1978,15 @@
       lang = "en";
       hadError = true;
     }
+    try {
+      const muteRes = await storageGet(MUTE_KEY);
+      if (muteRes && muteRes.value != null) {
+        muted = muteRes.value === "true";
+      }
+    } catch (e) {
+      muted = false;
+      hadError = true;
+    }
     if (hadError) storageError = "load";
     storageReady = true;
     render();
@@ -1913,6 +2006,22 @@
     if (lang === newLang) return;
     lang = newLang;
     saveLang();
+    render();
+  }
+
+  async function saveMute() {
+    try {
+      await storageSet(MUTE_KEY, String(muted));
+    } catch (e) {
+      console.error("Could not save sound preference", e);
+      storageError = "save";
+      render();
+    }
+  }
+
+  function toggleMute() {
+    muted = !muted;
+    saveMute();
     render();
   }
 
@@ -1952,10 +2061,12 @@
     current = queue[0];
     flipped = false;
     view = "session";
+    playNewCardSound(0);
     render();
   }
 
   function markLearned() {
+    playLearnedSound();
     learned[current.id] = true;
     saveProgress();
     advance();
@@ -1980,6 +2091,7 @@
       return;
     }
     current = queue[0];
+    playNewCardSound(0.2);
     render();
   }
 
@@ -2006,6 +2118,7 @@
       <div class="top">
         <div class="brand serif"><em>Pala</em>britas</div>
         <div class="lang-switch">
+          <button class="flag-btn mute-btn" id="mute-btn" title="${muted ? ui.unmuteSound : ui.muteSound}" aria-label="${muted ? ui.unmuteSound : ui.muteSound}" aria-pressed="${muted}">${muted ? '🔇' : '🔊'}</button>
           <button class="flag-btn ${lang === 'en' ? 'flag-active' : ''}" id="lang-en" title="English" aria-label="English">🇺🇸</button>
           <button class="flag-btn ${lang === 'uk' ? 'flag-active' : ''}" id="lang-uk" title="Українська" aria-label="Українська">🇺🇦</button>
           <button class="flag-btn ${lang === 'ru' ? 'flag-active' : ''}" id="lang-ru" title="Русский" aria-label="Русский">🇷🇺</button>
@@ -2066,6 +2179,7 @@
     document.getElementById("app").innerHTML = html;
 
     document.getElementById("reset-btn") && document.getElementById("reset-btn").addEventListener("click", resetProgress);
+    document.getElementById("mute-btn").addEventListener("click", toggleMute);
     document.getElementById("lang-en").addEventListener("click", () => setLang("en"));
     document.getElementById("lang-uk").addEventListener("click", () => setLang("uk"));
     document.getElementById("lang-ru").addEventListener("click", () => setLang("ru"));
@@ -2086,7 +2200,10 @@
     const html = `
       <div class="session-top">
         <button class="back-btn" id="back-btn">${ui.backToCategories}</button>
-        <span class="cat-chip chip-${chipCls}">${c.icon ? c.icon + ' ' : ''}${c.es}</span>
+        <div class="session-top-right">
+          <span class="cat-chip chip-${chipCls}">${c.icon ? c.icon + ' ' : ''}${c.es}</span>
+          <button class="flag-btn mute-btn" id="session-mute-btn" title="${muted ? ui.unmuteSound : ui.muteSound}" aria-label="${muted ? ui.unmuteSound : ui.muteSound}" aria-pressed="${muted}">${muted ? '🔇' : '🔊'}</button>
+        </div>
       </div>
       <div class="session-bar-track"><div class="session-bar-fill" style="width:${pct}%"></div></div>
 
@@ -2115,6 +2232,10 @@
     document.getElementById("app").innerHTML = html;
 
     document.getElementById("back-btn").addEventListener("click", goToPicker);
+    document.getElementById("session-mute-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMute();
+    });
     const cardEl = document.getElementById("card");
     cardEl.addEventListener("click", () => {
       flipped = !flipped;
