@@ -1,6 +1,8 @@
 # las-palabritas
 Word cards
 
+- v0.60 - Added Reverse mode toggle (🔁, top right, persisted): off shows Spanish → translation as before; on shows translation → Spanish, with the example sentence following the revealed Spanish word. Renamed "Mix mode" to "All words"
+- v0.59 - "Skip for now" is now available immediately when a card is shown, before or after flipping; skipping never counts toward progress (only "I know this" does)
 - v0.58 - Added simple Web Audio sound effects (synthesized, zero external assets) for new card, flip card and "I know this"
 - v0.57 - Rewrote all 162 templated thematic-topic examples ("Me gusta X.") across food, travel, animals, family, weather, colors, body, clothing, home, and emotions with contextual sentences; fixed 5 stray adjective placeholders ("Esto es muy X.": delicioso, extranjero, rojo, brillante, elegante)
 - v0.56 - Rewrote all 181 templated noun examples ("Me gusta X.") with contextual sentences
@@ -51,7 +53,8 @@ Whether you are an English, Ukrainian, or Russian speaker learning Spanish, Pala
 - 📂 **Dual Category Learning Modes**:
   - **Main Grammatical Categories**: Focus on core parts of speech (*Nouns, Adjectives, Verbs, Others*).
   - **Thematic Topics**: Target contextual vocabulary modules (*Food, Travel, Animals, Family, Weather, Colors, Body, Clothing, Home, Emotions*).
-- 🔀 **Mix Mode Deck**: Combine all categories and topics into a randomized full-deck practice session.
+- 🔀 **All Words Deck**: Combine all categories and topics into a randomized full-deck practice session.
+- 🔁 **Reverse Mode**: Toggle card direction between Spanish → translation (default) and translation → Spanish.
 - 📊 **Persistent Progress Tracking**: Automatically tracks learned words per category. Uses the Claude Artifacts `window.storage` API when run inside an Artifact, and falls back to `localStorage` when run as a standalone file — displaying progress bars, percentages, and completed badges either way.
 - 🔄 **Smart Session Management**: Skip cards for review later, mark mastered words, and review completed decks at any time.
 - 📱 **Mobile-First Responsive Layout**: Optimized for smartphones, tablets, and desktop displays with touch-friendly targets.
