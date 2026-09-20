@@ -1,14 +1,16 @@
 # las-palabritas
 Word cards
 
-- v0.60 - Added Reverse mode toggle (🔁, top right, persisted): off shows Spanish → translation as before; on shows translation → Spanish, with the example sentence following the revealed Spanish word. Renamed "Mix mode" to "All words"
-- v0.59 - "Skip for now" is now available immediately when a card is shown, before or after flipping; skipping never counts toward progress (only "I know this" does)
-- v0.58 - Added simple Web Audio sound effects (synthesized, zero external assets) for new card, flip card and "I know this"
-- v0.57 - Rewrote all 162 templated thematic-topic examples ("Me gusta X.") across food, travel, animals, family, weather, colors, body, clothing, home, and emotions with contextual sentences; fixed 5 stray adjective placeholders ("Esto es muy X.": delicioso, extranjero, rojo, brillante, elegante)
-- v0.56 - Rewrote all 181 templated noun examples ("Me gusta X.") with contextual sentences
-- v0.55 - Rewrote all 183 templated adjective examples ("Esto es muy X.") with contextual ser/estar sentences, gender-agreement corrected
-- v0.54 - Rewrote all 180 templated verb examples ("Quiero X.") with contextual sentences; fixed grammatically broken reflexive-verb placeholders (e.g. "Quiero levantarse" → "Necesito levantarme")
-- v0.53 - Fixed "Couldn't save progress" error: storage now falls back to localStorage when window.storage (Claude Artifact only) isn't available
+- v0.62 - Added 10 topics (Shopping, Sport, Cinema, Medicine, Auto, Professions, Internet & Computers, Education, Office, Hobbies): 200 new words
+- v0.61 - Confirmed target language (EN/UK/RU) is persisted like mute and reverse mode; no behavior change
+- v0.60 - Added Reverse mode toggle (🔁, persisted): translation → Spanish, with the example after the revealed Spanish word; renamed "Mix mode" to "All words"
+- v0.59 - "Skip for now" available immediately, before or after flipping; skipping never counts toward progress
+- v0.58 - Added synthesized sound effects (new card, skip, "I know this"), no external assets
+- v0.57 - Rewrote 162 templated thematic-topic examples with contextual sentences; fixed 5 stray adjective placeholders
+- v0.56 - Rewrote 181 templated noun examples with contextual sentences
+- v0.55 - Rewrote 183 templated adjective examples with contextual sentences and correct gender agreement
+- v0.54 - Rewrote 180 templated verb examples with contextual sentences; fixed broken reflexive-verb examples
+- v0.53 - Fixed "Couldn't save progress" error: storage falls back to localStorage outside Claude Artifacts
 - v0.52 - Removed duplicate thematic-topic words, disambiguated near-synonym pairs, added version footer
 - v0.51 - More words
 - v0.5 - Add Rus
@@ -52,7 +54,7 @@ Whether you are an English, Ukrainian, or Russian speaker learning Spanish, Pala
 - 🌐 **Trilingual Translation System**: Instant switching between **English**, **Ukrainian**, and **Russian** translations for both vocabulary words and UI controls.
 - 📂 **Dual Category Learning Modes**:
   - **Main Grammatical Categories**: Focus on core parts of speech (*Nouns, Adjectives, Verbs, Others*).
-  - **Thematic Topics**: Target contextual vocabulary modules (*Food, Travel, Animals, Family, Weather, Colors, Body, Clothing, Home, Emotions*).
+  - **Thematic Topics**: Target contextual vocabulary modules (*Food, Travel, Animals, Family, Weather, Colors, Body, Clothing, Home, Emotions, Shopping, Sport, Cinema, Medicine, Auto, Professions, Internet & Computers, Education, Office, Hobbies*).
 - 🔀 **All Words Deck**: Combine all categories and topics into a randomized full-deck practice session.
 - 🔁 **Reverse Mode**: Toggle card direction between Spanish → translation (default) and translation → Spanish.
 - 📊 **Persistent Progress Tracking**: Automatically tracks learned words per category. Uses the Claude Artifacts `window.storage` API when run inside an Artifact, and falls back to `localStorage` when run as a standalone file — displaying progress bars, percentages, and completed badges either way.
@@ -108,6 +110,16 @@ For focused real-world situational learning, words are organized into curated su
 | 👕 | La ropa | Clothing | Одяг | Одежда |
 | 🏠 | La casa | Home | Дім | Дом |
 | 💭 | Las emociones | Emotions | Емоції | Эмоции |
+| 🛍️ | Las compras | Shopping | Покупки | Покупки |
+| ⚽ | El deporte | Sport | Спорт | Спорт |
+| 🎬 | El cine | Cinema | Кіно | Кино |
+| 🩺 | La medicina | Medicine | Медицина | Медицина |
+| 🚗 | El automóvil | Auto | Авто | Авто |
+| 👷 | Las profesiones | Professions | Професії | Профессии |
+| 💻 | Internet e informática | Internet & Computers | Інтернет і комп'ютери | Интернет и компьютеры |
+| 🎓 | La educación | Education | Освіта | Образование |
+| 🏢 | La oficina | Office | Офіс | Офис |
+| 🧩 | Los pasatiempos | Hobbies | Хобі | Хобби |
 
 ---
 
